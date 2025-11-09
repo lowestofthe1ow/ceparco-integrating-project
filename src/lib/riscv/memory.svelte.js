@@ -1,5 +1,5 @@
 export class Memory {
-    memory = $state(new Array(65536));
+    memory = $state(new Array(65536).fill(0));
 
     /** Stores an n-byte integer value at an address */
     storeInteger(address, value, n) {
@@ -12,6 +12,8 @@ export class Memory {
 
     /** @return The n-byte integer value stored at an address */
     readInteger(address, n) {
+        // TODO: Check for if value is in range
+
         // This seems to work with signed integers as well
         let retval = 0;
 
@@ -20,5 +22,10 @@ export class Memory {
         }
 
         return retval;
+    }
+
+    storeByte(address, value) {
+        // TODO: Check for if value is in range
+        this.memory[address] = value;
     }
 }

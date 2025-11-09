@@ -1,10 +1,11 @@
+import { SvelteMap } from 'svelte/reactivity';
 import { Memory } from '$lib/riscv/memory.svelte.js'
 
 /** 2^16 memory locations from 0x0000 to 0xFFFF */
 export const memory = new Memory();
 
 /** Integer registers x0-x31 */
-export const registersInt = $state(new Map([
+export const registersInt = $state(new SvelteMap([
     ['zero', 0],
     ['ra', 0],
     ['sp', 0],
