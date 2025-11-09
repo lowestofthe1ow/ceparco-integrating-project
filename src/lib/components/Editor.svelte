@@ -4,6 +4,23 @@
     let container;
     let editor;
 
+    let sample = `.globl main
+.data
+    var1: .word 0x00000005
+    var2: .word 0x00000006
+    var3: .word 0x00000000
+.text
+main:
+    la t0, var1
+    la t1, var2
+    la t2, var3
+    lw a1, (t0)
+    lw a2, (t1)
+    add a0, a1, a2
+    sw a0, (t2)
+    li a7, 10
+    ecall`
+
     onMount(async () => {
         const monaco = await import('monaco-editor');
 
@@ -24,12 +41,12 @@
                     // Labels (identifiers)
                     [/[a-zA-Z_][a-zA-Z0-9_]*:/, 'label'],
                     // Comments
-                    [/#.*$/, 'comment'],
+                    [/;.*$/, 'comment'],
                     // Whitespace
                     [/\s+/, 'white'],
                     // Directives
                     // TODO: Only .word is required (?)
-                    [/(\.(text|data|global|word|byte|half|align|extern))\b/i, 'directive'],
+                    [/(\.(text|data|globl|global|word|byte|half|align|extern))\b/i, 'directive'],
                 ],
             },
         });
@@ -40,13 +57,15 @@
             inherit: true,
             rules: [
                 // Add styling for assembler directive tokens
-                { token: 'directive', foreground: '007acc', fontStyle: 'bold' }
+                { token: 'directive', foreground: '007acc', fontStyle: 'bold' },
+                { token: 'label', foreground: '007acc', fontStyle: 'bold' }
             ],
             colors: {}, // Use colors inherited from vs-dark
         });
 
         // Instantiate the editor and bind to DOM element
         editor = monaco.editor.create(container, {
+            value: sample,
             language: 'riscv',
             theme: 'main-theme'
         });
