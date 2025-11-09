@@ -4,22 +4,22 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
 // Follow this pattern for all other instructions
 
 /**
- * Executes an lw instruction.
- * rd = M[rs1+imm][0:31]
+ * Executes an slli instruction.
+ * rd = rs1 << imm[0:4]
  *
  * @param bin The binary (31:0) representation of the instruction.
  */
-export const lwExecute = (bin) => {
+export const slliExecute = (bin) => {
 
 }
 
 /**
- * Packs an LW instruction into a 32-bit binary value.
- * lw rd, imm(rs1)
+ * Packs an SLLI instruction into a 32-bit binary value.
+ * slli rd, rs1, imm
  */
-export const lwPack = (rd, imm, rs1) => {
+export const slliPack = (rd, imm, rs1) => {
     let immSignExtended = (imm >>> 0).toString(2).padStart(12, '0').slice(-12);
 
-    let bin = immSignExtended.toString(2) +  rs1.toString(2).padStart(5,'0') + "010" + rd.toString(2).padStart(5,'0') + "0000011"
+    let bin = immSignExtended.toString(2) +  rs1.toString(2).padStart(5,'0') + "001" + rd.toString(2).padStart(5,'0') + "0010011"
     return bin
 }
