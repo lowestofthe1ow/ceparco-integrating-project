@@ -11,6 +11,12 @@
     }
 </script>
 
+<!-- Mechanism to jump to an address -->
+<!-- TODO: Check for out-of-range errors -->
+<input type='text'
+    on:input={(e) => {startingAddress = parseInt(e.target.value, 16)}}
+    value={formatAsHex(startingAddress, 4)}/>
+
 <!-- Moves the addresses window up by 1 address -->
 <!-- TODO: Check for out-of-range errors -->
 <button on:click={() => {startingAddress--;}}>prev</button>
