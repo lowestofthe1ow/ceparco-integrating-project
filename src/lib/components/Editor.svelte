@@ -1,9 +1,12 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
 
+    let monaco; // Import monaco-editor library
     let container;
     let editor;
+    let decorations = [];
 
+    // Sample text
     let sample = `.globl main
 .data
     var1: .word 0x00000005
@@ -22,7 +25,7 @@ main:
     ecall`
 
     onMount(async () => {
-        const monaco = await import('monaco-editor');
+        monaco = await import('monaco-editor');
 
         // Register custom language for RISC-V
         monaco.languages.register({ id: 'riscv' });
@@ -75,6 +78,25 @@ main:
     export const getValue = () => {
         return editor.getValue()
     }
+
+    /** Highlights a specific line in the editor */
+    export const highlightLine = (line) => {
+        // Clear previous decorations if any
+        decorations = editor.deltaDecorations(
+            decorations,
+            [
+                {
+                    range: new monaco.Range(line, 1, line, 1),
+                    options: {
+                        isWholeLine: true,
+                        // Assigns a CSS class
+                        className: 'editor--highlight',
+                    },
+                },
+            ]
+        );
+    }
+
 </script>
 
 <div bind:this={container} style="width: 100%; height: 400px;"></div>
