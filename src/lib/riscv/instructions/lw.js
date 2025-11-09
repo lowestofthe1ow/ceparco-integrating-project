@@ -1,3 +1,6 @@
+// If you need access to memory and registers, include this import
+import { memory, registersInt } from '$lib/riscv/state.svelte.js'
+
 // Follow this pattern for all other instructions
 
 /**

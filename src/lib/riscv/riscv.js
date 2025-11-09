@@ -1,5 +1,5 @@
 // Get global processor state (memory and registers)
-import { memory, registersInt, registersFloat } from '$lib/riscv/state.svelte.js'
+import { memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 import { lwExecute, lwPack } from '$lib/riscv/instructions/lw.js';
