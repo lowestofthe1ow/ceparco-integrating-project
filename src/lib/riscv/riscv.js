@@ -1,3 +1,6 @@
+// Get global processor state (memory and registers)
+import { memory, registersInt, registersFloat } from '$lib/riscv/state.svelte.js'
+
 // Follow this pattern for all other instructions
 import { lwExecute, lwPack } from '$lib/riscv/instructions/lw.js';
 
@@ -36,7 +39,7 @@ export const parse = (input) => {
     let lines = input.trim().split(/\r?\n/)
 
     // Tokenize per line, filtering out empty lines
-    lines = lines.map(line => getParts(line).filter(Boolean))
+    lines = lines.map(line => getParts(line)).filter(Boolean)
 
     // Go over each line
     for (let line in lines) {

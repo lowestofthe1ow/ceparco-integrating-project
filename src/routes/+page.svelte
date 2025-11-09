@@ -1,11 +1,12 @@
 <script>
     import Editor from '$lib/components/Editor.svelte';
     import { parse } from '$lib/riscv/riscv.js';
+    import { memory, registersInt, registersFloat } from '$lib/riscv/state.svelte.js'
 
     let editor;
 
     const run = () => {
-        console.log(parse(editor.getValue()))
+        // console.log(parse(editor.getValue()))
     }
 </script>
 
