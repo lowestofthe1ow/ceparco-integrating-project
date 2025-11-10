@@ -23,5 +23,6 @@ export const beqPack = (imm, rs1, rs2) => {
     let imm5to10 = immSignExtended.substring(2, 8)
 
     let bin = immSignExtended.toString(2)[0] + imm5to10 + rs2.toString(2).padStart(5,'0') +  rs1.toString(2).padStart(5,'0') + "000" + imm1to4 + immSignExtended.toString(2)[1] + "1100011"
-    return bin
+
+    return parseInt(bin, 2)
 }
