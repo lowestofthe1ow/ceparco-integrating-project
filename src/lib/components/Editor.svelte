@@ -79,6 +79,11 @@ main:
         return editor.getValue()
     }
 
+    /** @returns The text currently stored in the editor */
+    export const setValue = (value) => {
+        editor.setValue(value);
+    }
+
     /** Highlights a specific line in the editor */
     export const highlightLine = (line) => {
         // Clear previous decorations if any
