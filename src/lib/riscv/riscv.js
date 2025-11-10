@@ -7,6 +7,8 @@ import { sllExecute, sllPack } from '$lib/riscv/instructions/sll.js';
 import { slliExecute, slliPack } from '$lib/riscv/instructions/slli.js';
 import { sltExecute, sltPack } from '$lib/riscv/instructions/slt.js';
 import { swExecute, swPack } from '$lib/riscv/instructions/sw.js';
+import { beqExecute, beqPack } from '$lib/riscv/instructions/beq.js';
+import { bltExecute, bltPack } from '$lib/riscv/instructions/blt.js';
 
 const sections = {
     NONE: 0,
@@ -23,6 +25,11 @@ const hexAllowedRegex = /^0x[0-9a-fA-F]+$/;
 const binAllowedRegex = /^0b[0-1]+$/;
 const decAllowedRegex = /^-?[0-9]+$/;
 const locNameAllowedRegex = /[0-9a-zA-Z]:$/;
+
+/** Convert register into its number representation  */
+const getRegNumber = (reg) => {
+    return regNames.indexOf(reg) % 32
+}
 
 /** Splits a line of code into its first token and the rest of the line */
 const getParts = (line) => {
@@ -47,7 +54,11 @@ export const parse = (input) => {
         globlNames: [],
         branchNames: [],
         branchLineNos: [],
+        branchTypes: [],
+        branchRS1: [],
+        branchRS2: [],
         locNames: [],
+        locLineNos: [],
         // TODO: Put packed instructions into here
         instructions: [],
     }
@@ -75,6 +86,7 @@ export const parse = (input) => {
         // If instruction comes after location name
         if(line.length > 1 && currentSection == sections.TEXT && locNameAllowedRegex.test(line[0])) {
             programData.locNames.push(line[0].slice(0, -1))
+            programData.locLineNos.push(i)
             let dump = line.shift()
             line = line[0].split(/\s+(.*)/);
         }
@@ -115,6 +127,7 @@ export const parse = (input) => {
         else if(currentSection == sections.TEXT && locNameAllowedRegex.test(line[0])) {
             console.log("HERE")
             programData.locNames.push(line[0].slice(0, -1))
+            programData.locLineNos.push(i)
         }
         // We're not dealing with single-word instructions
         else if(line.length == 1) {
@@ -165,6 +178,8 @@ export const parse = (input) => {
                     (hexAllowedRegex.test(numArg) || binAllowedRegex.test(numArg)
                     || decAllowedRegex.test(numArg))) {
                     // TODO: LW call
+                    programData.instructions.push(lwPack(getRegNumber(args[0]), parseInt(numArg),
+                                                  getRegNumber(innerArg)))
                 } else {
                     throw { message: "Invalid operands", line: i }
                 }
@@ -182,6 +197,8 @@ export const parse = (input) => {
                     (hexAllowedRegex.test(numArg) || binAllowedRegex.test(numArg)
                     || decAllowedRegex.test(numArg))) {
                     // TODO: SW call
+                    programData.instructions.push(swPack(getRegNumber(args[0]), parseInt(numArg),
+                                getRegNumber(innerArg)))
                 } else {
                     throw { message: "Invalid operands", line: i }
                 }
@@ -193,6 +210,8 @@ export const parse = (input) => {
                 } else if(regNames.includes(args[0]) && regNames.includes(args[1])
                     && regNames.includes(args[2])) {
                     // TODO: SLT call
+                    programData.instructions.push(sltPack(getRegNumber(args[0]),
+                                getRegNumber(args[1]), getRegNumber(args[2])))
                 } else {
                     throw { message: "Invalid operands", line: i }
                 }
@@ -204,6 +223,8 @@ export const parse = (input) => {
                 } else if(regNames.includes(args[0]) && regNames.includes(args[1])
                     && regNames.includes(args[2])) {
                     // TODO: SLL call
+                    programData.instructions.push(sllPack(getRegNumber(args[0]),
+                                getRegNumber(args[1]), getRegNumber(args[2])))
                 } else {
                     throw { message: "Invalid operands", line: i }
                 }
@@ -216,6 +237,8 @@ export const parse = (input) => {
                     (hexAllowedRegex.test(args[2]) || binAllowedRegex.test(args[2])
                     || decAllowedRegex.test(args[2]))) {
                     // TODO: SLLI call
+                    programData.instructions.push(sltPack(getRegNumber(args[0]),
+                                getRegNumber(args[1]), parseInt(args[2])))
                 } else {
                     throw { message: "Invalid operands", line: i }
                 }
@@ -231,6 +254,10 @@ export const parse = (input) => {
                     // To consider capitalization
                     programData.branchNames.push(line[1].replace(/,/g, "").split(" ")[2])
                     programData.branchLineNos.push(i)
+                    programData.branchTypes.push("beq")
+                    programData.branchRS1.push(args[0])
+                    programData.branchRS2.push(args[1])
+                    programData.instructions.push(-1) // Indicate branch instruction
                 }
             }
             // blt instruction
@@ -242,6 +269,10 @@ export const parse = (input) => {
                 } else {
                     programData.branchNames.push(line[1].replace(/,/g, "").split(" ")[2])
                     programData.branchLineNos.push(i)
+                    programData.branchTypes.push("blt")
+                    programData.branchRS1.push(args[0])
+                    programData.branchRS2.push(args[1])
+                    programData.instructions.push(-1) // Indicate branch instruction
                 }
             }
             // Fail to match with any valid instructions
@@ -260,6 +291,23 @@ export const parse = (input) => {
                 line: programData.branchLineNos[i]
             }
         }
+    }
+
+    for(let i in programData.branchLineNos) {
+        let jmpCount = programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
+            - programData.branchLineNos[i]
+
+        // Index of branch in instructions is where instructions contains value -1
+        let branchIndx = programData.instructions.indexOf(-1)
+
+        if(programData.branchTypes[i].toLowerCase() === "beq")
+            programData.instructions[branchIndx] = beqPack(jmpCount,
+                getRegNumber(programData.branchRS1[i]), 
+                getRegNumber(programData.branchRS2[i]))
+        else if(programData.branchTypes[i].toLowerCase() === "blt")
+            programData.instructions[branchIndx] = bltPack(jmpCount,
+                getRegNumber(programData.branchRS1[i]), 
+                getRegNumber(programData.branchRS2[i]))
     }
 
     return programData
