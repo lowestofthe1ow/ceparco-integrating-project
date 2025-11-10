@@ -17,7 +17,8 @@ export const sllExecute = (bin) => {
  * Packs an SLL instruction into a 32-bit binary value.
  * sll rd, rs1, rs2
  */
-export const sllPack = (rd, imm, rs1) => {
+export const sllPack = (rd, rs1, rs2) => {
     let bin = "0000000" + rs2.toString(2).padStart(5,'0') + rs1.toString(2).padStart(5,'0') + "001" + rd.toString(2).padStart(5,'0') + "0110011"
-    return bin
+
+    return parseInt(bin, 2)
 }

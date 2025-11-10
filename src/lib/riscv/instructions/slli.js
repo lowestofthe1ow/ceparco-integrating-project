@@ -17,9 +17,10 @@ export const slliExecute = (bin) => {
  * Packs an SLLI instruction into a 32-bit binary value.
  * slli rd, rs1, imm
  */
-export const slliPack = (rd, imm, rs1) => {
+export const slliPack = (rd, rs1, imm) => {
     let immSignExtended = (imm >>> 0).toString(2).padStart(12, '0').slice(-12);
 
     let bin = immSignExtended.toString(2) +  rs1.toString(2).padStart(5,'0') + "001" + rd.toString(2).padStart(5,'0') + "0010011"
-    return bin
+
+    return parseInt(bin, 2)
 }

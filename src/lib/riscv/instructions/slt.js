@@ -19,5 +19,6 @@ export const sltExecute = (bin) => {
  */
 export const sltPack = (rd, rs1, rs2) => {
     let bin = "0000000" + rs2.toString(2).padStart(5,'0') + rs1.toString(2).padStart(5,'0') + "010" + rd.toString(2).padStart(5,'0') + "0110011"
-    return bin
+
+    return parseInt(bin, 2)
 }

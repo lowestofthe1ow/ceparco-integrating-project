@@ -21,5 +21,6 @@ export const lwPack = (rd, imm, rs1) => {
     let immSignExtended = (imm >>> 0).toString(2).padStart(12, '0').slice(-12);
 
     let bin = immSignExtended.toString(2) +  rs1.toString(2).padStart(5,'0') + "010" + rd.toString(2).padStart(5,'0') + "0000011"
-    return bin
+
+    return parseInt(bin, 2)
 }

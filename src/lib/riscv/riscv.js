@@ -3,6 +3,10 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 import { lwExecute, lwPack } from '$lib/riscv/instructions/lw.js';
+import { sllExecute, sllPack } from '$lib/riscv/instructions/sll.js';
+import { slliExecute, slliPack } from '$lib/riscv/instructions/slli.js';
+import { sltExecute, sltPack } from '$lib/riscv/instructions/slt.js';
+import { swExecute, swPack } from '$lib/riscv/instructions/sw.js';
 
 /** Splits a line of code into its first token and the rest of the line */
 const getParts = (line) => {
