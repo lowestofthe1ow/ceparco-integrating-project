@@ -7,22 +7,23 @@
     let decorations = [];
 
     // Sample text
-    let sample = `.globl main
-.data
-    var1: .word 0x00000005
-    var2: .word 0x00000006
-    var3: .word 0x00000000
+    let sample = `.data
+x1: .word 100, 0x9FFF, 0b00101 # comment1
+
+#comment 2
+
 .text
+
 main:
-    la t0, var1
-    la t1, var2
-    la t2, var3
-    lw a1, (t0)
-    lw a2, (t1)
-    add a0, a1, a2
-    sw a0, (t2)
-    li a7, 10
-    ecall`
+    LW x5, 0(x1)
+    slli x6, x5, 2
+    BEQ x7, x0, L1
+    SW x6, 4(x1)
+    SLT x7, x5, x6
+    BLT x0, x5, L1
+    
+L1: SLL x10, x7, x6
+    sa x2, x3 #line 15 should not work`
 
     onMount(async () => {
         monaco = await import('monaco-editor');

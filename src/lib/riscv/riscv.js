@@ -39,11 +39,25 @@ const parseLabel = (line) => {
 
 /** Parses RISC-V code. */
 export const parse = (input) => {
-    // Split into lines, ignoring empty lines
-    let lines = input.trim().split(/\r?\n/)
+    // Split into lines
+    // Do not ignore empty lines since that's needed for error line count
+    let lines = input.split(/\r?\n/)
 
-    // Tokenize per line, filtering out empty lines
-    lines = lines.map(line => getParts(line)).filter(Boolean)
+    // Handle comments
+    lines = lines.map(line => {
+            line = line.split('#')[0]
+            line.trim()
+            return line
+    })
+
+    // Tokenize per line and remove comments
+    lines = lines.map(line => getParts(line)
+    ).map(line => {
+        if(line === null) {
+            return " "
+        }
+        return line
+    }) // Avoid dealing with NULL
 
     // Go over each line
     for (let line in lines) {
