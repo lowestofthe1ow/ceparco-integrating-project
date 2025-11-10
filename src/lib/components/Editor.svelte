@@ -79,6 +79,12 @@ main:
         return editor.getValue()
     }
 
+    /** Clears highlight in the editor */
+    export const clearHighlight = () => {
+        // Clear previous decorations
+
+    }
+
     /** Highlights a specific line in the editor */
     export const highlightLine = (line) => {
         // Clear previous decorations if any
