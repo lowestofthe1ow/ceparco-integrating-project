@@ -82,7 +82,11 @@ main:
     /** Clears highlight in the editor */
     export const clearHighlight = () => {
         // Clear previous decorations
+    }
 
+    /** @returns The text currently stored in the editor */
+    export const setValue = (value) => {
+        editor.setValue(value);
     }
 
     /** Highlights a specific line in the editor */

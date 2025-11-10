@@ -23,8 +23,5 @@ export const swPack = (rs2, imm, rs1) => {
     let imm5to11 = immSignExtended.substring(0, 7)
 
     let bin = imm5to11 + rs2.toString(2).padStart(5,'0') + rs1.toString(2).padStart(5,'0') + "010" + imm0to4 + "0100011"
-
-    return parseInt(bin, 2)
+    return bin
 }
-
-console.log(swPack(1,2,1))
