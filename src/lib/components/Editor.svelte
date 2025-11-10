@@ -19,11 +19,12 @@ main:
     slli x6, x5, 2
     BEQ x7, x0, L1
     SW x6, 4(x1)
+    SLLI x30, x31, 0x100
     SLT x7, x5, x6
     BLT x0, x5, L1
+    BEQ x1, x2, L2
     
-L1: SLL x10, x7, x6
-    sa x2, x3 #line 15 should not work`
+L1: SLL x10, x7, x6`
 
     onMount(async () => {
         monaco = await import('monaco-editor');
