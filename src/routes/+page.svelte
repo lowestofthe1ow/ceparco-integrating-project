@@ -4,6 +4,8 @@
     import Editor from '$lib/components/Editor.svelte';
     import { parse } from '$lib/riscv/riscv.js';
     import { memory, registersInt } from '$lib/riscv/state.svelte.js';
+    import { slliPack } from '$lib/riscv/instructions/slli.js';
+    import { beqPack } from '$lib/riscv/instructions/beq.js';
 
     let editor;
     let startingAddress = 0x0000;
@@ -18,6 +20,11 @@
 
             // Parse program
             let program = parse(editor.getValue())
+
+            for (let i = 0; i < program.instructions.length; i++) {
+                console.log(i + ": " + program.instructions[i].toString(16))
+                memory.storeInteger(0x0080 + i*4, program.instructions[i], 4)
+            }
 
             // Do stuff with program
             console.log(program)

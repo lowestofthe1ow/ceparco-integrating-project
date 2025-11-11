@@ -237,7 +237,7 @@ export const parse = (input) => {
                     (hexAllowedRegex.test(args[2]) || binAllowedRegex.test(args[2])
                     || decAllowedRegex.test(args[2]))) {
                     // TODO: SLLI call
-                    programData.instructions.push(sltPack(getRegNumber(args[0]),
+                    programData.instructions.push(slliPack(getRegNumber(args[0]),
                                 getRegNumber(args[1]), parseInt(args[2])))
                 } else {
                     throw { message: "Invalid operands", line: i }
@@ -294,8 +294,8 @@ export const parse = (input) => {
     }
 
     for(let i in programData.branchLineNos) {
-        let jmpCount = programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
-            - programData.branchLineNos[i]
+        let jmpCount = (programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
+            - programData.branchLineNos[i] - 1) * 4
 
         // Index of branch in instructions is where instructions contains value -1
         let branchIndx = programData.instructions.indexOf(-1)
