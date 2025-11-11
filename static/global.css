@@ -25,18 +25,24 @@ h2, h3 {
     padding: 10px;
 }
 
+.editor__tray {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+}
+
 .main {
     display: flex;
     gap: 20px;
 }
 
 .viewer {
-    border-bottom: 1px solid lightgray;
+    border: 1px solid lightgray;
     border-radius: 10px;
     border-top: 1px solid lightgray;
     display: flex;
     flex-direction: column;
-    gap: 2.5px;
+    gap: 5px;
     padding: 10px;
 }
 
@@ -51,7 +57,7 @@ h2, h3 {
 }
 
 .viewer__input {
-    border: none;
+    border: 1px dashed lightgray;
     font-size: 0.9em;
     max-width: 120px;
     padding: 5px;
@@ -59,12 +65,12 @@ h2, h3 {
 }
 
 .viewer__input--goto {
-    border: 1px solid lightgray;
     flex: 0;
     text-align: center;
 }
 
 .viewer__label {
+    align-content: center;
     flex: 1;
     font-size: 0.9em;
     padding: 5px;

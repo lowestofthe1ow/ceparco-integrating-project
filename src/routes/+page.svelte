@@ -60,8 +60,11 @@
 
     <div style="flex-grow: 1">
         <Editor bind:this={editor} />
-        <button on:click={run}>Run</button>
-        <input type="file" accept=".asm" on:change={loadASM} />
+
+        <div class="editor__tray">
+            <button class="editor__tray--button" on:click={run}>Run</button>
+            <input class="editor__tray--button" type="file" accept=".asm" on:change={loadASM} />
+        </div>
 
         {#if error}
         <p style="color: red; font-family: 'Fira Code'"><strong>Error in line {error.line}.</strong> {error.message}</p>
