@@ -46,7 +46,7 @@ L1: SLL x10, x7, x6`
                     // Labels (identifiers)
                     [/[a-zA-Z_][a-zA-Z0-9_]*:/, 'label'],
                     // Comments
-                    [/;.*$/, 'comment'],
+                    [/#.*$/, 'comment'],
                     // Whitespace
                     [/\s+/, 'white'],
                     // Directives
@@ -58,7 +58,7 @@ L1: SLL x10, x7, x6`
 
         // Define a custom theme
         monaco.editor.defineTheme('main-theme', {
-            base: 'vs-dark',
+            base: 'vs',
             inherit: true,
             rules: [
                 // Add styling for assembler directive tokens
@@ -72,7 +72,8 @@ L1: SLL x10, x7, x6`
         editor = monaco.editor.create(container, {
             value: sample,
             language: 'riscv',
-            theme: 'main-theme'
+            theme: 'main-theme',
+            fontFamily: 'Fira Code',
         });
     })
 
@@ -84,6 +85,7 @@ L1: SLL x10, x7, x6`
     /** Clears highlight in the editor */
     export const clearHighlight = () => {
         // Clear previous decorations
+        decorations = []
     }
 
     /** @returns The text currently stored in the editor */
@@ -111,4 +113,6 @@ L1: SLL x10, x7, x6`
 
 </script>
 
-<div bind:this={container} style="width: 100%; height: 400px;"></div>
+<div class="editor__wrapper">
+    <div bind:this={container} style="width: 100%; height: 400px;"></div>
+</div>

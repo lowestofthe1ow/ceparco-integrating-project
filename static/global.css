@@ -1,3 +1,77 @@
+body {
+    font-family: 'Outfit';
+    padding: 40px;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .editor--highlight {
-    background-color: rgba(255, 255, 0, 0.1);
+    background-color: rgba(255,255,0,0.1);
+}
+
+.editor__wrapper {
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    display: block;
+    font-family: 'Fira Code';
+    padding: 10px;
+}
+
+.main {
+    display: flex;
+    gap: 20px;
+}
+
+.viewer {
+    border-bottom: 1px solid lightgray;
+    border-radius: 10px;
+    border-top: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+    padding: 10px;
+}
+
+.viewer__button {
+    background-color: white;
+    border: 1px solid lightgray;
+    flex-grow: 1;
+}
+
+.viewer__button:hover {
+    border-color: green;
+}
+
+.viewer__input {
+    border: none;
+    font-size: 0.9em;
+    max-width: 120px;
+    padding: 5px;
+    text-align: right;
+}
+
+.viewer__input--goto {
+    border: 1px solid lightgray;
+    flex: 0;
+    text-align: center;
+}
+
+.viewer__label {
+    flex: 1;
+    font-size: 0.9em;
+    padding: 5px;
+}
+
+.viewer__row {
+    display: flex;
+    font-family: 'Fira Code';
+    gap: 5px;
 }

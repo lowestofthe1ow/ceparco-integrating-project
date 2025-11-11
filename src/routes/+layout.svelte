@@ -1,6 +1,11 @@
 <script>
 	import favicon from '$lib/assets/favicon.svg';
 
+	import 'normalize.css'
+
+	import "@fontsource/outfit";
+	import "@fontsource/fira-code";
+
 	let { children } = $props();
 </script>
 

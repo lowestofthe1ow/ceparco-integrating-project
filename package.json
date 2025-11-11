@@ -27,5 +27,10 @@
 	"bugs": {
 		"url": "https://github.com/lowestofthe1ow/ceparco-integrating-project/issues"
 	},
-	"homepage": "https://github.com/lowestofthe1ow/ceparco-integrating-project#readme"
+	"homepage": "https://github.com/lowestofthe1ow/ceparco-integrating-project#readme",
+	"dependencies": {
+		"@fontsource/fira-code": "^5.2.7",
+		"@fontsource/outfit": "^5.2.8",
+		"normalize.css": "^8.0.1"
+	}
 }

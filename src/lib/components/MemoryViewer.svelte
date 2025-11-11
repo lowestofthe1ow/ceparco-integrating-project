@@ -11,35 +11,37 @@
     }
 </script>
 
-<!-- Moves the addresses window up by 1 address -->
-<!-- TODO: Check for out-of-range errors -->
-<button on:click={() => {startingAddress--;}}>&uarr;</button>
+<div class='viewer'>
+    <div class='viewer__row'>
+        <!-- Moves the addresses window up by 1 address -->
+        <!-- TODO: Check for out-of-range errors -->
+        <button class='viewer__button' on:click={() => {startingAddress--;}}>&larr;</button>
+        <!-- Mechanism to jump to an address -->
+        <!-- TODO: Check for out-of-range errors -->
+        <input class='viewer__input viewer__input--goto' type='text'
+            on:input={(e) => {startingAddress = parseInt(e.target.value, 16)}}
+            value={formatAsHex(startingAddress, 4)}/>
+        <!-- Moves the addresses window down by 1 address -->
+        <!-- TODO: Check for out-of-range errors -->
+        <button class='viewer__button' on:click={() => {startingAddress++;}}>&rarr;</button>
+    </div>
 
-<!-- Moves the addresses window down by 1 address -->
-<!-- TODO: Check for out-of-range errors -->
-<button on:click={() => {startingAddress++;}}>&darr;</button>
-
-<!-- Mechanism to jump to an address -->
-<!-- TODO: Check for out-of-range errors -->
-<input type='text'
-    on:input={(e) => {startingAddress = parseInt(e.target.value, 16)}}
-    value={formatAsHex(startingAddress, 4)}/>
-
-<table>
     {#each getMemorySlice() as value, index}
-        <tr>
+        <div class='viewer__row'>
             <!-- Provides direct edit access to all memory addresses -->
             <!-- Address label -->
-            <td>{formatAsHex(startingAddress + index, 4)}</td>
+            <div class='viewer__label'>{formatAsHex(startingAddress + index, 4)}</div>
             <!-- Value field -->
-            <td>
-                <input type='text'
+            <div>
+                <input
+                    class='viewer__input'
+                    type='text'
                     on:input={(e) =>
                         memory.storeByte(startingAddress + index, parseInt(e.target.value, 16))}
                     value={formatAsHex(value, 2)} />
-            </td>
-        </tr>
+            </div>
+        </div>
     {/each}
-</table>
+</div>
 
 

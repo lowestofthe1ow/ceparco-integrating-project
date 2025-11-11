@@ -13,18 +13,20 @@
     }
 </script>
 
-<table>
+<div class='viewer'>
     {#each registersInt.entries() as [register, value]}
-        <tr>
+        <div class='viewer__row'>
             <!-- Provides direct edit access to all registers -->
             <!-- Register label -->
-            <td>{register}</td>
+            <div class='viewer__label'>{register}</div>
             <!-- Value field -->
-            <td>
-                <input type='text'
+            <div>
+                <input
+                    class='viewer__input'
+                    type='text'
                     on:input={(e) => updateRegister(register, parseInt(e.target.value, 16))}
                     value={formatAsHex(value, 8)} />
-            </td>
-        </tr>
+            </div>
+        </div>
     {/each}
-</table>
+</div>
