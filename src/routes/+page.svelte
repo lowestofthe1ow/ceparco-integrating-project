@@ -1,9 +1,10 @@
 <script>
+    import InstructionViewer from '$lib/components/InstructionViewer.svelte';
     import RegisterViewer from '$lib/components/RegisterViewer.svelte';
     import MemoryViewer from '$lib/components/MemoryViewer.svelte';
     import Editor from '$lib/components/Editor.svelte';
     import { parse } from '$lib/riscv/riscv.js';
-    import { memory, registersInt } from '$lib/riscv/state.svelte.js';
+    import { memory, program, registersInt } from '$lib/riscv/state.svelte.js';
     import { slliPack } from '$lib/riscv/instructions/slli.js';
     import { beqPack } from '$lib/riscv/instructions/beq.js';
 
@@ -20,11 +21,11 @@
             editor.clearHighlight()
 
             // Parse program
-            let program = parse(editor.getValue())
+            program.program = parse(editor.getValue())
 
             // Load program into memory
-            for (let i = 0; i < program.instructions.length; i++) {
-                memory.storeInteger(0x0080 + i*4, program.instructions[i], 4)
+            for (let i = 0; i < program.program.instructions.length; i++) {
+                memory.storeInteger(0x0080 + i*4, program.program.instructions[i], 4)
             }
 
             // Do stuff with program
@@ -69,6 +70,13 @@
         {#if error}
         <p style="color: red; font-family: 'Fira Code'"><strong>Error in line {error.line}.</strong> {error.message}</p>
         {/if}
+
+        <br /> <!-- TODO: Don't use a <br> here -->
+
+        <div>
+            <h2>Instruction viewer</h2>
+            <InstructionViewer />
+        </div>
     </div>
 </div>
 

@@ -61,6 +61,7 @@ export const parse = (input) => {
         locLineNos: [],
         // TODO: Put packed instructions into here
         instructions: [],
+        instructionText: [],
     }
 
     // Split into lines
@@ -163,6 +164,8 @@ export const parse = (input) => {
 
         else if(currentSection == sections.TEXT) { // you can declare stuff outside of a function apparently
             let args = line[1].toLowerCase().replace(/,/g, "").split(" ")
+
+            programData.instructionText.push(line[0] + " " + line[1]);
 
             // nemurihiMEEEEEEE mezameru watashi wa iMAAAAAAAAAAAA
             // lw instruction

@@ -1,0 +1,9 @@
+0. What is the lowest clock frequency allowed for the HC11?
+0 Hz (DC)
+
+1. Will it run if fed with a 2MHz clock with a 20 ns rise/fall time?
+Yes, assuming no other timing violations
+
+2. What is the frequency of the clock if it is known to be exactly 50% duty cycle
+
+3. 2MHz duty cycle of 50% What is the clock ri se time
