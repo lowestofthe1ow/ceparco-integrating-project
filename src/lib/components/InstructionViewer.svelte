@@ -15,7 +15,7 @@
     {#each getInstructions() ?? [] as instruction, index}
         <div class='viewer__row'>
             <div class='viewer__label'>{getInstructionsText()[index]}</div>
-            <div class='viewer__label'>{formatAsHex(instruction)}</div>
+            <div class='viewer__label'>{formatAsHex(instruction, 8)}</div>
         </div>
     {:else}
         <div class='viewer__row'>
