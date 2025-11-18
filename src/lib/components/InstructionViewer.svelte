@@ -3,24 +3,31 @@
     import formatAsHex from '$lib/helpers/hex.js'
 
     const getInstructions = () => {
-        return program.program ? program.program.instructions : [];
+        return program.data ? program.data.instructions : [];
     }
 
     const getInstructionsText = () => {
-        return program.program ? program.program.instructionText : [];
+        return program.data ? program.data.lines : [];
     }
 </script>
 
-<div class='viewer'>
-    {#each getInstructions() ?? [] as instruction, index}
-        <div class='viewer__row'>
-            <div class='viewer__label'>{getInstructionsText()[index]}</div>
-            <div class='viewer__label'>{formatAsHex(0x80 + index * 4, 8)}</div>
-            <div class='viewer__label'>{formatAsHex(instruction, 8)}</div>
-        </div>
-    {:else}
-        <div class='viewer__row'>
-            <p>No program loaded.</p>
-        </div>
-    {/each}
-</div>
+<table class='viewer'>
+    <tbody>
+        <tr class='viewer__row'>
+            <th class='viewer__label viewer__label--header'>Address</th>
+            <th class='viewer__label viewer__label--header'>Line</th>
+            <th class='viewer__label viewer__label--header'>Binary</th>
+        </tr>
+        {#each getInstructions() ?? [] as instruction, index}
+            <tr class='viewer__row'>
+                <td class='viewer__label'>{formatAsHex(0x80 + index * 4, 8)}</td>
+                <td class='viewer__label'>{getInstructionsText()[index]}</td>
+                <td class='viewer__label'>{formatAsHex(instruction, 8)}</td>
+            </tr>
+        {:else}
+            <tr class='viewer__row'>
+                <td  class='viewer__label'>No program loaded.</td>
+            </tr>
+        {/each}
+    </tbody>
+</table>

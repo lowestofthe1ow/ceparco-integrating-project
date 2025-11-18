@@ -76,6 +76,12 @@ h2, h3 {
     padding: 5px;
 }
 
+.viewer__label--header {
+    text-align: left;
+    font-family: 'Outfit';
+    font-weight: bold;
+}
+
 .viewer__row {
     display: flex;
     font-family: 'Fira Code';

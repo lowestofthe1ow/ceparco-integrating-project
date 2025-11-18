@@ -26,6 +26,11 @@
         <button class='viewer__button' on:click={() => {startingAddress++;}}>&rarr;</button>
     </div>
 
+    <div class='viewer__row'>
+        <div class='viewer__label viewer__label--header'>Address</div>
+        <div class='viewer__label viewer__label--header' style="text-align: right">Data</div>
+    </div>
+
     {#each getMemorySlice() as value, index}
         <div class='viewer__row'>
             <!-- Provides direct edit access to all memory addresses -->

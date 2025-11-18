@@ -47,7 +47,7 @@ const getParts = (line) => {
     }
 }
 
-/** Parses RISC-V code. */
+/** Parses RISC-V code and returns a single object containing all data */
 export const parse = (input) => {
     // Return value. Object representation of the program
     const programData = {
@@ -59,9 +59,8 @@ export const parse = (input) => {
         branchRS2: [],
         locNames: [],
         locLineNos: [],
-        // TODO: Put packed instructions into here
-        instructions: [],
-        instructionText: [],
+        instructions: [], // Instruction binary data (e.g. 0x0000A283)
+        lines: [], // Instruction text data (e.g. "LW x5, 0(x1)")
     }
 
     // Split into lines
@@ -165,7 +164,7 @@ export const parse = (input) => {
         else if(currentSection == sections.TEXT) { // you can declare stuff outside of a function apparently
             let args = line[1].toLowerCase().replace(/,/g, "").split(" ")
 
-            programData.instructionText.push(line[0] + " " + line[1]);
+            programData.lines.push(line[0] + " " + line[1]);
 
             // nemurihiMEEEEEEE mezameru watashi wa iMAAAAAAAAAAAA
             // lw instruction

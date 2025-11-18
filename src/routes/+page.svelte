@@ -16,16 +16,20 @@
 
     const run = () => {
         try {
+            // Clear all memory and program data
+            memory.clear();
+            program.data = {};
+
             // Reset error objcet
             error = null
             editor.clearHighlight()
 
             // Parse program
-            program.program = parse(editor.getValue())
+            program.data = parse(editor.getValue())
 
             // Load program into memory
-            for (let i = 0; i < program.program.instructions.length; i++) {
-                memory.storeInteger(0x0080 + i*4, program.program.instructions[i], 4)
+            for (let i = 0; i < program.data.instructions.length; i++) {
+                memory.storeInteger(0x0080 + i*4, program.data.instructions[i], 4)
             }
 
             // Do stuff with program

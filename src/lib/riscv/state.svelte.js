@@ -5,7 +5,7 @@ import { Memory } from '$lib/riscv/memory.svelte.js'
 export const programCounter = $state(0);
 
 /** Loaded program */
-export const program = $state({program: null});
+export const program = $state({data: null});
 
 /** 2^16 memory locations from 0x0000 to 0xFFFF */
 export const memory = new Memory();

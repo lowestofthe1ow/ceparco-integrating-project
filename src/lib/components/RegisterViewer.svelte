@@ -14,6 +14,11 @@
 </script>
 
 <div class='viewer'>
+    <div class='viewer__row'>
+        <div class='viewer__label viewer__label--header'>Register</div>
+        <div class='viewer__label viewer__label--header' style="text-align: right">Data</div>
+    </div>
+
     {#each registersInt.entries() as [register, value]}
         <div class='viewer__row'>
             <!-- Provides direct edit access to all registers -->

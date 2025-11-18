@@ -1,6 +1,10 @@
 export class Memory {
     memory = $state(new Array(65536).fill(0));
 
+    clear() {
+        this.memory.fill(0);
+    }
+
     /** Stores an n-byte integer value at an address */
     storeInteger(address, value, n) {
         // TODO: Check for if value is in range
