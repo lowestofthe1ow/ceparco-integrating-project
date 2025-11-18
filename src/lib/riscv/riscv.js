@@ -61,6 +61,7 @@ export const parse = (input) => {
         locLineNos: [],
         instructions: [], // Instruction binary data (e.g. 0x0000A283)
         lines: [], // Instruction text data (e.g. "LW x5, 0(x1)")
+        emptyLineNos: [],
     }
 
     // Split into lines
@@ -93,6 +94,7 @@ export const parse = (input) => {
 
         if(line[0] === " ") {
             // Do nothing
+            programData.emptyLineNos.push(i)
         }
 
         // globl, data, text directives ==========================================================
@@ -128,6 +130,7 @@ export const parse = (input) => {
             console.log("HERE")
             programData.locNames.push(line[0].slice(0, -1))
             programData.locLineNos.push(i)
+            programData.emptyLineNos.push(i)
         }
         // We're not dealing with single-word instructions
         else if(line.length == 1) {
@@ -296,8 +299,17 @@ export const parse = (input) => {
     }
 
     for(let i in programData.branchLineNos) {
-        let jmpCount = (programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
-            - programData.branchLineNos[i] - 1) * 4
+        let locLineNo = programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
+        let branchLineNo = programData.branchLineNos[i]
+        let numEmptyLines = 0
+
+        for(let i in programData.emptyLineNos) {
+            if((programData.emptyLineNos[i] > branchLineNo && programData.emptyLineNos[i] < locLineNo)
+                || (programData.emptyLineNos[i] < branchLineNo && programData.emptyLineNos[i] > locLineNo))
+                numEmptyLines++
+        }
+
+        let jmpCount = (locLineNo - branchLineNo - numEmptyLines) * 4
 
         // Index of branch in instructions is where instructions contains value -1
         let branchIndx = programData.instructions.indexOf(-1)
