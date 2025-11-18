@@ -1,5 +1,8 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { Memory } from '$lib/riscv/memory.svelte.js'
+import { Pipeline } from '$lib/riscv/pipeline.svelte.js';
+
+export const pipeline = new Pipeline();
 
 /** Program counter */
 export const programCounter = $state(0);

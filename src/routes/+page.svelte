@@ -2,9 +2,10 @@
     import InstructionViewer from '$lib/components/InstructionViewer.svelte';
     import RegisterViewer from '$lib/components/RegisterViewer.svelte';
     import MemoryViewer from '$lib/components/MemoryViewer.svelte';
+    import PipelineRegisterViewer from '$lib/components/PipelineRegisterViewer.svelte';
     import Editor from '$lib/components/Editor.svelte';
     import { parse } from '$lib/riscv/riscv.js';
-    import { memory, program, registersInt } from '$lib/riscv/state.svelte.js';
+    import { memory, pipeline, program, registersInt } from '$lib/riscv/state.svelte.js';
     import { slliPack } from '$lib/riscv/instructions/slli.js';
     import { beqPack } from '$lib/riscv/instructions/beq.js';
 
@@ -12,6 +13,7 @@
     import IconData from '~icons/solar/database-bold-duotone'
     import IconCPU from '~icons/solar/cpu-bold-duotone'
     import IconPlay from '~icons/solar/playback-speed-bold-duotone'
+    import IconLayers from '~icons/solar/layers-bold-duotone'
 
     let editor;
     let startingAddress = 0x0000;
@@ -32,6 +34,12 @@
             // Parse program
             program.data = parse(editor.getValue())
 
+            // Scroll to instruction viewer
+            const instructionViewer = document.getElementById('instructions');
+            if (instructionViewer) {
+                instructionViewer.scrollIntoView({ behavior: 'smooth' });
+            }
+
             // Load program into memory
             for (let i = 0; i < program.data.instructions.length; i++) {
                 memory.storeInteger(0x0080 + i*4, program.data.instructions[i], 4)
@@ -49,6 +57,10 @@
         const file = event.target.files[0];
         const content = await file.text();
         editor.setValue(content)
+    }
+
+    const step = () => {
+        pipeline.step();
     }
 </script>
 
@@ -75,27 +87,40 @@
         </div>
     </div>
 
-    <div style="flex-grow: 1">
-        <Editor bind:this={editor} />
+    <div style="display: flex; flex-direction: column; gap: 20px; flex: 1">
+        <div>
+            <Editor bind:this={editor} />
 
-        <div class="editor__tray">
-            <button class="editor__tray__button" on:click={run}><IconPlay />Run</button>
-            <input class="editor__tray__button" type="file" accept=".asm" on:change={loadASM} />
+            <div class="editor__tray">
+                <button class="editor__tray__button" on:click={run}><IconPlay />Run</button>
+                <input class="editor__tray__button" type="file" accept=".asm" on:change={loadASM} />
+            </div>
         </div>
 
         {#if error}
         <p style="color: red; font-family: 'Fira Code'"><strong>Error in line {error.line}.</strong> {error.message}</p>
         {/if}
 
-        <br /> <!-- TODO: Don't use a <br> here -->
-
-        <div>
+        <div id="instructions">
             <hgroup class="header">
                 <IconCode class="icon--header"/>
                 <h2 style="margin: 0">Instructions</h2>
             </hgroup>
 
             <InstructionViewer />
+        </div>
+
+        <div>
+            <hgroup class="header">
+                <IconLayers class="icon--header"/>
+                <h2 style="margin: 0">Pipeline registers</h2>
+            </hgroup>
+
+            <PipelineRegisterViewer />
+
+            <div class="editor__tray">
+                <button class="editor__tray__button" on:click={step}><IconPlay />Step</button>
+            </div>
         </div>
     </div>
 </div>
