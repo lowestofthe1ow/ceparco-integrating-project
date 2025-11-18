@@ -134,7 +134,7 @@ export const parse = (input) => {
         }
         // We're not dealing with single-word instructions
         else if(line.length == 1) {
-            throw { message: line[0].split(" ")[0] + " is not a recognized instruction", line: i}
+            throw { message: line[0].split(" ")[0] + " is not a recognized instruction without arguments", line: i}
         }
 
         // Data declarations =====================================================================
@@ -241,6 +241,20 @@ export const parse = (input) => {
                 } else if(regNames.includes(args[0]) && regNames.includes(args[1]) &&
                     (hexAllowedRegex.test(args[2]) || binAllowedRegex.test(args[2])
                     || decAllowedRegex.test(args[2]))) {
+
+                    // Check if imm < 0x20
+                    if(args[2].startsWith("0x") &&
+                        (parseInt(args[2].replace("0x", ""), 16) > 19)) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+                    else if(args[2].startsWith("0b") &&
+                        (parseInt(args[2].replace("0b", ""), 2) > 19)) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+                    else if(parseInt(args[2].replace("0x", ""), 10) > 19) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+
                     // TODO: SLLI call
                     programData.instructions.push(slliPack(getRegNumber(args[0]),
                                 getRegNumber(args[1]), parseInt(args[2])))
