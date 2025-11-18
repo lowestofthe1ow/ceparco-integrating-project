@@ -8,6 +8,11 @@
     import { slliPack } from '$lib/riscv/instructions/slli.js';
     import { beqPack } from '$lib/riscv/instructions/beq.js';
 
+    import IconCode from '~icons/solar/code-bold'
+    import IconData from '~icons/solar/database-bold-duotone'
+    import IconCPU from '~icons/solar/cpu-bold-duotone'
+    import IconPlay from '~icons/solar/playback-speed-bold-duotone'
+
     let editor;
     let startingAddress = 0x0000;
 
@@ -53,12 +58,19 @@
 <div class="main">
     <div class="sidebar">
         <div>
-            <h2>Memory viewer</h2>
+            <hgroup class="header">
+                <IconData class="icon--header"/>
+                <h2 style="margin: 0">Memory</h2>
+            </hgroup>
             <MemoryViewer />
         </div>
 
         <div>
-            <h2>Register viewer</h2>
+            <hgroup class="header">
+                <IconCPU class="icon--header"/>
+                <h2 style="margin: 0">Registers</h2>
+            </hgroup>
+
             <RegisterViewer />
         </div>
     </div>
@@ -67,8 +79,8 @@
         <Editor bind:this={editor} />
 
         <div class="editor__tray">
-            <button class="editor__tray--button" on:click={run}>Run</button>
-            <input class="editor__tray--button" type="file" accept=".asm" on:change={loadASM} />
+            <button class="editor__tray__button" on:click={run}><IconPlay />Run</button>
+            <input class="editor__tray__button" type="file" accept=".asm" on:change={loadASM} />
         </div>
 
         {#if error}
@@ -78,7 +90,11 @@
         <br /> <!-- TODO: Don't use a <br> here -->
 
         <div>
-            <h2>Instruction viewer</h2>
+            <hgroup class="header">
+                <IconCode class="icon--header"/>
+                <h2 style="margin: 0">Instructions</h2>
+            </hgroup>
+
             <InstructionViewer />
         </div>
     </div>

@@ -1,3 +1,12 @@
+.header {
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px
+}
+
+.icon--header {
+    font-size: 1.5em;
+}
+
 body {
     font-family: 'Outfit';
     padding: 40px;
@@ -29,6 +38,12 @@ h2, h3 {
     display: flex;
     gap: 10px;
     padding-top: 10px;
+}
+
+.editor__tray__button {
+    display: flex;
+    gap: 5px;
+    align-items: center;
 }
 
 .main {
