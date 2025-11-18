@@ -10,7 +10,13 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
  * @param bin The binary (31:0) representation of the instruction.
  */
 export const lwExecute = (bin) => {
-
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rd = parseInt(binaryRep.slice(20, 25), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
+    
+    wordVal = memory.readInteger(rs1 + imm, 4)
+    registersInt.set(rd, wordVal)
 }
 
 /**
