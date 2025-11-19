@@ -61,6 +61,7 @@ export const parse = (input) => {
         locLineNos: [],
         instructions: [], // Instruction binary data (e.g. 0x0000A283)
         lines: [], // Instruction text data (e.g. "LW x5, 0(x1)")
+        emptyLineNos: [],
     }
 
     // Split into lines
@@ -93,6 +94,7 @@ export const parse = (input) => {
 
         if(line[0] === " ") {
             // Do nothing
+            programData.emptyLineNos.push(i)
         }
 
         // globl, data, text directives ==========================================================
@@ -128,10 +130,11 @@ export const parse = (input) => {
             console.log("HERE")
             programData.locNames.push(line[0].slice(0, -1))
             programData.locLineNos.push(i)
+            programData.emptyLineNos.push(i)
         }
         // We're not dealing with single-word instructions
         else if(line.length == 1) {
-            throw { message: line[0].split(" ")[0] + " is not a recognized instruction", line: i}
+            throw { message: line[0].split(" ")[0] + " is not a recognized instruction without arguments", line: i}
         }
 
         // Data declarations =====================================================================
@@ -238,6 +241,20 @@ export const parse = (input) => {
                 } else if(regNames.includes(args[0]) && regNames.includes(args[1]) &&
                     (hexAllowedRegex.test(args[2]) || binAllowedRegex.test(args[2])
                     || decAllowedRegex.test(args[2]))) {
+
+                    // Check if imm < 0x20
+                    if(args[2].startsWith("0x") &&
+                        (parseInt(args[2].replace("0x", ""), 16) > 19)) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+                    else if(args[2].startsWith("0b") &&
+                        (parseInt(args[2].replace("0b", ""), 2) > 19)) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+                    else if(parseInt(args[2].replace("0x", ""), 10) > 19) {
+                        throw { message: args[2] + " is out of range", line: i }
+                    }
+
                     // TODO: SLLI call
                     programData.instructions.push(slliPack(getRegNumber(args[0]),
                                 getRegNumber(args[1]), parseInt(args[2])))
@@ -296,8 +313,17 @@ export const parse = (input) => {
     }
 
     for(let i in programData.branchLineNos) {
-        let jmpCount = (programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
-            - programData.branchLineNos[i] - 1) * 4
+        let locLineNo = programData.locLineNos[programData.locNames.indexOf(programData.branchNames[i])]
+        let branchLineNo = programData.branchLineNos[i]
+        let numEmptyLines = 0
+
+        for(let i in programData.emptyLineNos) {
+            if((programData.emptyLineNos[i] > branchLineNo && programData.emptyLineNos[i] < locLineNo)
+                || (programData.emptyLineNos[i] < branchLineNo && programData.emptyLineNos[i] > locLineNo))
+                numEmptyLines++
+        }
+
+        let jmpCount = (locLineNo - branchLineNo - numEmptyLines) * 4
 
         // Index of branch in instructions is where instructions contains value -1
         let branchIndx = programData.instructions.indexOf(-1)
