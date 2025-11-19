@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-import { memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { programCounter,  memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -10,7 +10,12 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
  * @param bin The binary (31:0) representation of the instruction.
  */
 export const bltExecute = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24), 2) << 1
 
+    if(rs1 < rs2){programCounter += imm}
 }
 
 /**

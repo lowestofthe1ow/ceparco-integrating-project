@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-//import { memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -10,7 +10,14 @@
  * @param bin The binary (31:0) representation of the instruction.
  */
 export const swExecute = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep.slice(0, 7) + binaryRep.slice(20, 25), 2)
 
+    rs2Value = registersInt.get(rs2)
+    memory.storeInteger(rs1 + imm, rs2Value, 4)
+    
 }
 
 /**

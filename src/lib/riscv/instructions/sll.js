@@ -10,7 +10,13 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
  * @param bin The binary (31:0) representation of the instruction.
  */
 export const sllExecute = (bin) => {
-
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let rd = parseInt(binaryRep.slice(20, 25), 2)
+    
+    shiftedVal = registersInt.get(rs1) << registersInt.get(rs2)
+    registersInt.set(rd, shiftedVal)
 }
 
 /**
