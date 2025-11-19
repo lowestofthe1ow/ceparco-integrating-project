@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-import { programCounter,  memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -15,7 +15,13 @@ export const beqExecute = (bin) => {
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
     let imm = parseInt(binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24), 2) << 1
 
-    if(rs1 == rs2){programCounter += imm}
+    pipeline.EX_MEM.ALUOUT = pipeline.ID_EX.NPC + imm - 8 // TODO: -8 is a hack fix kasi idt tama yung address na lumalabas
+
+    if(rs1 == rs2){
+        pipeline.EX_MEM.COND = 1
+    } else {
+        pipeline.EX_MEM.COND = 0
+    }
 }
 
 /**

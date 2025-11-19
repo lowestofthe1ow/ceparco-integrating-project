@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-import { memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -12,11 +12,15 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js'
 export const lwExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
-    let rd = parseInt(binaryRep.slice(20, 25), 2)
+    // TODO: Move to a writeback function
+    // let rd = parseInt(binaryRep.slice(20, 25), 2)
     let imm = parseInt(binaryRep.slice(0, 12), 2)
     
-    wordVal = memory.readInteger(rs1 + imm, 4)
-    registersInt.set(rd, wordVal)
+    // This shouldn't happen until MEM stage
+    // wordVal = memory.readInteger(rs1 + imm, 4)
+
+    // EX/MEM.ALUOUT <- ID/EX.A op ID/EX.IMM
+    pipeline.EX_MEM.ALUOUT = rs1 + imm
 }
 
 /**

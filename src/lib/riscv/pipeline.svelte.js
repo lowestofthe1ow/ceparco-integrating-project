@@ -1,4 +1,5 @@
 import { memory, registersInt } from '$lib/riscv/state.svelte.js';
+import { EXInstruction } from '$lib/riscv/instructions.js'
 
 export class Pipeline {
     IF_ID = $state({
@@ -44,14 +45,20 @@ export class Pipeline {
         // EX stage
         this.EX_MEM.IR = this.ID_EX.IR;
 
+        this.ID_EX.NPC = this.IF_ID.PC; // Match NPC of IF/ID, moved this up here cus parseinstruction needs it updated
+
+        EXInstruction(this.EX_MEM.IR) // this internally sets ALUOUT and COND
+
         // ID stage
         this.ID_EX.IR = this.IF_ID.IR;
-        this.ID_EX.NPC = this.IF_ID.PC; // Match NPC of IF/ID
+
 
         // IF stage
         this.IF_ID.IR = memory.readInteger(this.IF_ID.PC, 4);
         this.IF_ID.NPC = this.IF_ID.PC
         this.IF_ID.PC += 4; // TODO: Handle branch
+
+        console.log("HERE" + this.IF_ID.PC)
     }
 }
 

@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-import { memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -13,9 +13,12 @@ export const sltExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
-    let rd = parseInt(binaryRep.slice(20, 25), 2)
+    // TODO: Move to a writeback function
+    // let rd = parseInt(binaryRep.slice(20, 25), 2)
     
-    registersInt.set(rd, registersInt.get(rs1) < registersInt.get(rs2) ? 1 : 0)
+    let value = registersInt.get(rs1) < registersInt.get(rs2) ? 1 : 0
+
+    pipeline.EX_MEM.ALUOUT = value
 }
 
 /**

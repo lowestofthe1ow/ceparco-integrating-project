@@ -1,0 +1,52 @@
+import { lwExecute } from '$lib/riscv/instructions/lw.js'
+import { swExecute } from '$lib/riscv/instructions/sw.js'
+import { sltExecute } from '$lib/riscv/instructions/slt.js'
+import { sllExecute } from '$lib/riscv/instructions/sll.js'
+import { slliExecute } from '$lib/riscv/instructions/slli.js'
+import { beqExecute } from '$lib/riscv/instructions/beq.js'
+import { bltExecute } from '$lib/riscv/instructions/blt.js'
+
+/* -----------------------------------------------------------------------------
+We're assigned LW, SW, SLT, SLL, SLLI, BEQ, BLT
+This is how we decode the instruction
+We don't care about 31:25 because 14:12 and 6:0 are enough
+
+Bits    31:25       14:12       6:0
+LW                  010         0000011
+SW                  010         0100011
+SLT     0000000     010         0110011
+SLL     0000000     001         0110011
+SLLI    0000000     001         0010011
+BEQ                 000         1100011
+BLT                 100         1100011
+----------------------------------------------------------------------------- */
+
+/**
+ * Executes an instruction and modifies EX/MEM.ALUOUT and EX/MEM.COND
+ *
+ * @param instruction The binary (31:0) representation of the instruction.
+ */
+export const EXInstruction = (instruction) => {
+    const binaryRep = instruction.toString(2).padStart(32, '0')
+
+    // Mask bits
+    const b14_12 = (instruction >> 12) & 0b111
+    const b6_0 = instruction & 0b1111111
+
+    // yanderedev ass ifelse tower
+    if (b14_12 == 0b010 && b6_0 == 0b0000011) {
+        lwExecute(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
+        swExecute(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+        sltExecute(instruction);
+    } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+        sllExecute(instruction);
+    } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+        slliExecute(instruction);
+    } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
+        beqExecute(instruction);
+    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
+        bltExecute(instruction);
+    }
+}

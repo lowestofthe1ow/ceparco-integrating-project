@@ -4,9 +4,6 @@ import { Pipeline } from '$lib/riscv/pipeline.svelte.js';
 
 export const pipeline = new Pipeline();
 
-/** Program counter */
-export const programCounter = $state(0);
-
 /** Loaded program */
 export const program = $state({data: null});
 
