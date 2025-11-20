@@ -1,5 +1,10 @@
 # CEPARCO Integrating Project: Simplified RISC-V Simulator
 
+## Updates (20 November 2025)
+We have implemented a GUI to display registers and memory. Clicking "run" will assemble the program. Clicking "step" will run an instruction in sequence. Currently, the pipeline roughly supports initial execution up to EX/MEM.ALUOUT.
+
+[Short demo video](https://drive.google.com/file/d/1ZMur02V1XTQILYaj5C6t2zaHj93UWbPY/view?usp=sharing)
+
 ## Updates (13 November 2025)
 
 [Short demo video](https://drive.google.com/file/d/1CNoDc2ll5lurYX4iQ_8idGqS7uOwHeM4/view?usp=sharing)
