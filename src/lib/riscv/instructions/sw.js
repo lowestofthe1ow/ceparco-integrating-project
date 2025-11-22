@@ -23,6 +23,25 @@ export const swExecute = (bin) => {
 }
 
 /**
+ * Mems a sw instruction.
+ * 
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const lwMem = (bin) => {
+    // Need to account for addresses that are imm + register address
+}
+
+/**
+ * Writes back a sw instruction.
+ * 
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const swWB = (bin) => {
+    pipeline.WB.REGISTER = "N/A"
+}
+
+
+/**
  * Packs an SW instruction into a 32-bit binary value.
  * sw rs2, imm(rs1)
  */
