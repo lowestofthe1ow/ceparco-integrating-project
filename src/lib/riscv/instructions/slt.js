@@ -30,3 +30,28 @@ export const sltPack = (rd, rs1, rs2) => {
 
     return parseInt(bin, 2)
 }
+
+export const sltDecode = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+
+    const entries = [...registersInt]
+    
+    pipeline.ID_EX.A = entries[rs1]?.[1]
+    pipeline.ID_EX.B = entries[rs2]?.[1]
+    pipeline.ID_EX.IMM = imm
+}
+
+export const sltMemory = () => {
+    pipeline.MEM_WB.ALUOUT = pipeline.EX_MEM.ALUOUT
+}
+
+export const sltWriteback = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rd = parseInt(binaryRep.slice(20, 25), 2)
+
+    const entries = [...registersInt]
+    
+    registersInt.set(entries[rd]?.[0], pipeline.MEM_WB.ALUOUT)
+}
