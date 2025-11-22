@@ -2,38 +2,51 @@ import { memory, registersInt } from '$lib/riscv/state.svelte.js';
 import { EXInstruction } from '$lib/riscv/instructions.js'
 
 export class Pipeline {
-    IF_ID = $state({
-        IR: 0,
-        PC: 0x80,
-        NPC: 0,
-    });
+    // Set up reactive states
+    IF_ID = $state({});
+    ID_EX = $state({});
+    EX_MEM = $state({});
+    MEM_WB = $state({});
+    WB = $state({});
 
-    ID_EX = $state({
-        IR: 0,
-        A: 0,
-        B: 0,
-        IMM: 0,
-        NPC: 0
-    });
+    constructor() {
+        this.initialize();
+    }
 
-    EX_MEM = $state({
-        IR: 0,
-        ALUOUT: 0,
-        B: 0,
-        COND: 0
-    })
+    initialize() {
+        this.IF_ID = {
+            IR: 0,
+            PC: 0x80,
+            NPC: 0,
+        };
 
-    MEM_WB = $state({
-        IR: 0,
-        LMD: 0,
-        ALUOUT: 0,
-        MEMORY: 0
-    })
+        this.ID_EX = {
+            IR: 0,
+            A: 0,
+            B: 0,
+            IMM: 0,
+            NPC: 0
+        };
 
-    WB = $state({
-        IR: 0,
-        REGISTER: 0
-    })
+        this.EX_MEM = {
+            IR: 0,
+            ALUOUT: 0,
+            B: 0,
+            COND: 0
+        }
+
+        this.MEM_WB = {
+            IR: 0,
+            LMD: 0,
+            ALUOUT: 0,
+            MEMORY: 0
+        }
+
+        this.WB = {
+            IR: 0,
+            REGISTER: 0
+        }
+    }
 
     step() {
         // WB stage
