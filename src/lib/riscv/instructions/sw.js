@@ -1,7 +1,24 @@
 // If you need access to memory and registers, include this import
-import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt,
+        getRegValue, setRegValue } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
+
+/**
+ * Decodes an sw instruction.
+ * M[rs1+imm][0:31] = rs2[0:31]
+ *
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const swDecode = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
+    
+    pipeline.ID_EX.A = getRegValue(rs1)
+    pipeline.ID_EX.B = pipeline.EX_MEM.B
+    pipeline.ID_EX.IMM = imm
+}
 
 /**
  * Executes an sw instruction.
@@ -11,15 +28,11 @@ import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
  */
 export const swExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
-    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
-    let imm = parseInt(binaryRep.slice(0, 7) + binaryRep.slice(20, 25), 2)
 
-    // TODO: Writeback
-    // rs2Value = registersInt.get(rs2)
-    // memory.storeInteger(rs1 + imm, rs2Value, 4)
-    
-    pipeline.EX_MEM.ALUOUT = rs1 + imm
+    pipeline.EX_MEM.ALUOUT = pipeline.MEM_WB.ALUOUT
+    pipeline.EX_MEM.B = getRegValue(rs2)
+    pipeline.EX_MEM.COND = 0
 }
 
 /**
@@ -27,8 +40,17 @@ export const swExecute = (bin) => {
  * 
  * @param bin The binary (31:0) representation of the instruction.
  */
-export const lwMem = (bin) => {
-    // Need to account for addresses that are imm + register address
+export const swMem = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep.slice(0, 7) + binaryRep.slice(20, 25), 2)
+
+    pipeline.MEM_WB.LMD = "N/A"
+    pipeline.MEM_WB.ALUOUT = getRegValue(rs1) + imm
+    pipeline.MEM_WB.MEMORY = getRegValue(rs2)
+
+    memory.storeByte(pipeline.MEM_WB.ALUOUT, pipeline.MEM_WB.MEMORY)
 }
 
 /**
