@@ -138,6 +138,11 @@ export class Pipeline {
     }
 
     step() {
+        if (this.cycle > 1 && isNaN(this.WB.IR) && isNaN(this.MEM_WB.IR) && isNaN(this.EX_MEM.IR) && isNaN(this.ID_EX.IR) && isNaN(this.IF_ID.IR)) {
+            return false;
+        }
+
+
         if (this.cutOffBranch) {
             this.IF_ID.IR = NaN
             this.ID_EX.IR = NaN
@@ -233,7 +238,13 @@ export class Pipeline {
             this.addToCycleMap(0, this.IF_ID.IR)
         }
 
+        if (this.cycle > 1 && isNaN(this.WB.IR) && isNaN(this.MEM_WB.IR) && isNaN(this.EX_MEM.IR) && isNaN(this.ID_EX.IR) && isNaN(this.IF_ID.IR)) {
+            return true;
+        }
+
         this.cycle += 1;
+
+        return true;
     }
 }
 

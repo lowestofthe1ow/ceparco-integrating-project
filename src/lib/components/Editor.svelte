@@ -70,7 +70,7 @@ main: SW t1, 0(x0)
     /** Clears highlight in the editor */
     export const clearHighlight = () => {
         // Clear previous decorations
-        decorations = []
+        decorations = editor.deltaDecorations(decorations, [])
     }
 
     /** @returns The text currently stored in the editor */

@@ -47,6 +47,7 @@
             for (let i = 0; i < program.data.instructions.length; i++) {
                 memory.storeInteger(0x0080 + i*4, program.data.instructions[i], 4)
             }
+
         } catch (e) {
             error = e;
             editor.highlightLine(e.line);
@@ -61,6 +62,10 @@
 
     const step = () => {
         pipeline.step();
+    }
+
+    const fullExec = () => {
+        while (pipeline.step()) {};
     }
 </script>
 
@@ -127,6 +132,8 @@
 
             <div class="editor__tray">
                 <button class="editor__tray__button" on:click={step}><IconPlay />Step</button>
+
+                <button class="editor__tray__button" on:click={fullExec}><IconPlay />Full execution</button>
             </div>
 
             <PipelineRegisterViewer />
