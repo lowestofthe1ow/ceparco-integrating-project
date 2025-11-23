@@ -119,6 +119,12 @@ export class Pipeline {
         this.addToCycleMap(3, this.MEM_WB.IR)
         MEMInstruction(this.MEM_WB.IR);
 
+        if (isNaN(this.MEM_WB.IR)) {
+            this.MEM_WB.LMD = NaN
+            this.MEM_WB.ALUOUT = NaN
+            this.MEM_WB.MEMORY = NaN
+        }
+
         // EX stage
         this.EX_MEM.IR = this.ID_EX.IR;
         this.addToCycleMap(2, this.EX_MEM.IR)
@@ -126,20 +132,43 @@ export class Pipeline {
         // Execute the instruction in the EX/MEM stage
         EXInstruction(this.EX_MEM.IR)
 
+        if (isNaN(this.EX_MEM.IR)) {
+            this.EX_MEM.ALUOUT = NaN
+            this.EX_MEM.B = NaN
+            this.EX_MEM.COND = NaN
+        }
+
         // ID stage
         // We check here if stalled by any dependencies
         if (this.IF_ID.stalled) {
             this.ID_EX.IR = NaN
+            this.ID_EX.A = NaN
+            this.ID_EX.B = NaN
+            this.ID_EX.IMM = NaN
+            this.ID_EX.NPC = NaN
         } else {
             this.ID_EX.NPC = this.IF_ID.NPC; // Copy the NPC
             this.ID_EX.IR = this.IF_ID.IR;
 
             // Decode the instruction in the ID/EX stage
             IDInstruction(this.ID_EX.IR)
+
+            if (isNaN(this.ID_EX.IR)) {
+                this.ID_EX.A = NaN
+                this.ID_EX.B = NaN
+                this.ID_EX.IMM = NaN
+                this.ID_EX.NPC = NaN
+            }
+
             this.addToCycleMap(1, this.ID_EX.IR)
 
             // IF stage
             this.IF_ID.IR = memory.readInteger(this.IF_ID.PC, 4);
+
+            if (this.IF_ID.IR == 0) {
+                this.IF_ID.IR = NaN;
+            }
+
             this.IF_ID.NPC = this.IF_ID.PC
 
             if (this.IF_ID.IR) {

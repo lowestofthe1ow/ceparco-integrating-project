@@ -20,7 +20,7 @@
             <th class='viewer__label viewer__label--header'>Data</th>
         </tr>
 
-        {#each Object.entries(pipeline.IF_ID) as [key, value]}
+        {#each Object.entries(pipeline.IF_ID).slice(0, -1) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
                     <span style="color: gray">IF/ID.</span>{key}
@@ -31,7 +31,7 @@
 
         <tr><td><br /></td></tr> <!-- TODO: This sucks -->
 
-        {#each Object.entries(pipeline.ID_EX) as [key, value]}
+        {#each Object.entries(pipeline.ID_EX).slice(0, -1) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
                     <span style="color: gray">ID/EX.</span>{key}
@@ -42,7 +42,7 @@
 
         <tr><td><br /></td></tr>
 
-        {#each Object.entries(pipeline.EX_MEM) as [key, value]}
+        {#each Object.entries(pipeline.EX_MEM).slice(0, -1) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
                     <span style="color: gray">EX/MEM.</span>{key}
@@ -53,7 +53,7 @@
 
         <tr><td><br /></td></tr>
 
-        {#each Object.entries(pipeline.MEM_WB) as [key, value]}
+        {#each Object.entries(pipeline.MEM_WB).slice(0, -1) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
                     <span style="color: gray">MEM/WB.</span>{key}
@@ -64,7 +64,7 @@
 
         <tr><td><br /></td></tr>
 
-        {#each Object.entries(pipeline.WB) as [key, value]}
+        {#each Object.entries(pipeline.WB).slice(0, -1) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
                     <span style="color: gray">WB.</span>{key}

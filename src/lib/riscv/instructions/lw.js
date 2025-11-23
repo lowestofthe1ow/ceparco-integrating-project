@@ -13,13 +13,15 @@ import { pipeline, memory, registersInt,
  */
 export const lwDecode = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
+
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let imm = parseInt(binaryRep.slice(0, 12), 2)
 
     console.log("Decoding LW: Found rs1 = " + getRegValue(rs1) + " and imm = " + imm)
 
     pipeline.ID_EX.A = getRegValue(rs1)
-    pipeline.ID_EX.B = pipeline.EX_MEM.B
+    pipeline.ID_EX.B = getRegValue(rs2)
     pipeline.ID_EX.IMM = imm
 }
 
@@ -53,7 +55,8 @@ export const lwMem = (bin) => {
 
 
     pipeline.MEM_WB.LMD = memory.readInteger(pipeline.EX_MEM.ALUOUT, 4)
-
+    pipeline.MEM_WB.ALUOUT = NaN;
+    pipeline.MEM_WB.MEMORY = NaN;
 }
 
 /**
