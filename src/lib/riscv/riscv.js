@@ -127,7 +127,6 @@ export const parse = (input) => {
         }
         // Labeled instructions (branchable locations)
         else if(currentSection == sections.TEXT && locNameAllowedRegex.test(line[0])) {
-            console.log("HERE")
             programData.locNames.push(line[0].slice(0, -1))
             programData.locLineNos.push(i)
             programData.emptyLineNos.push(i)

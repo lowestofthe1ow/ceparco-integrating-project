@@ -10,7 +10,9 @@
     let sample = `.text
 main: LW x6, 0(x1)
       LW x9, 0(x1)
-      BEQ x6, x9, main`
+      BEQ x6, x9, L1
+      LW x7, 0(x2)
+      L1: LW x8, 0(x3)`
 
     onMount(async () => {
         monaco = await import('monaco-editor');

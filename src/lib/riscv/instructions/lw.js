@@ -15,7 +15,9 @@ export const lwDecode = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let imm = parseInt(binaryRep.slice(0, 12), 2)
-    
+
+    console.log("Decoding LW: Found rs1 = " + getRegValue(rs1) + " and imm = " + imm)
+
     pipeline.ID_EX.A = getRegValue(rs1)
     pipeline.ID_EX.B = pipeline.EX_MEM.B
     pipeline.ID_EX.IMM = imm
@@ -35,7 +37,8 @@ export const lwExecute = (bin) => {
     // wordVal = memory.readInteger(rs1 + imm, 4)
 
     // EX/MEM.ALUOUT <- ID/EX.A op ID/EX.IMM
-    pipeline.EX_MEM.ALUOUT = pipeline.MEM_WB.ALUOUT
+    console.log("A = " + pipeline.ID_EX.A + "B = " + pipeline.ID_EX.IMM)
+    pipeline.EX_MEM.ALUOUT = pipeline.ID_EX.A + pipeline.ID_EX.IMM
     pipeline.EX_MEM.B = getRegValue(rs2)
     pipeline.EX_MEM.COND = 0
 }
@@ -47,13 +50,10 @@ export const lwExecute = (bin) => {
  */
 export const lwMem = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
-    let rd = parseInt(binaryRep.slice(20, 25), 2)
 
-    pipeline.MEM_WB.LMD = "N/A"
-    pipeline.MEM_WB.ALUOUT = pipeline.WB.REGISTER
-    pipeline.MEM_WB.MEMORY = "N/A"
 
-    setRegValue(rd, pipeline.MEM_WB.ALUOUT)
+    pipeline.MEM_WB.LMD = memory.readInteger(pipeline.EX_MEM.ALUOUT, 4)
+
 }
 
 /**
@@ -65,8 +65,13 @@ export const lwWB = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let imm = parseInt(binaryRep.slice(0, 12), 2)
-    
-    pipeline.WB.REGISTER = memory.readInteger(getRegValue(rs1) + imm, 1)
+    let rd = parseInt(binaryRep.slice(20, 25), 2)
+
+    console.log("rd = " + rd)
+
+    console.log("LMD = " + pipeline.MEM_WB.LMD)
+
+    setRegValue(rd, pipeline.MEM_WB.LMD)
 }
 
 /**

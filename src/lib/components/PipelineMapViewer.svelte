@@ -28,6 +28,7 @@
         {#each Object.entries(pipeline.stageCycles) as [key, value]}
             <tr class='viewer__row'>
                 <td class='viewer__label'>
+                    <!-- TODO: Lmao this doesn't work with identical instructions -->
                     {program.data.lines[program.data.instructions.indexOf(Number(key) >>> 0)]}
                 </td>
                 {#each { length: pipeline.cycle - 1 } as _, i}

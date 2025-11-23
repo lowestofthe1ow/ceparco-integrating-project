@@ -1,10 +1,10 @@
-import { lwExecute } from '$lib/riscv/instructions/lw.js'
+import { lwExecute, lwDecode, lwMem, lwWB } from '$lib/riscv/instructions/lw.js'
 import { swExecute } from '$lib/riscv/instructions/sw.js'
-import { sltExecute } from '$lib/riscv/instructions/slt.js'
-import { sllExecute } from '$lib/riscv/instructions/sll.js'
-import { slliExecute } from '$lib/riscv/instructions/slli.js'
-import { beqExecute } from '$lib/riscv/instructions/beq.js'
-import { bltExecute } from '$lib/riscv/instructions/blt.js'
+import { sltExecute, sltDecode } from '$lib/riscv/instructions/slt.js'
+import { sllExecute, sllDecode } from '$lib/riscv/instructions/sll.js'
+import { slliExecute, slliDecode } from '$lib/riscv/instructions/slli.js'
+import { beqExecute, beqDecode } from '$lib/riscv/instructions/beq.js'
+import { bltExecute, bltDecode } from '$lib/riscv/instructions/blt.js'
 
 /* -----------------------------------------------------------------------------
 We're assigned LW, SW, SLT, SLL, SLLI, BEQ, BLT
@@ -20,6 +20,26 @@ SLLI    0000000     001         0010011
 BEQ                 000         1100011
 BLT                 100         1100011
 ----------------------------------------------------------------------------- */
+
+export const pipeline2Branch = (instruction) => {
+    const binaryRep = instruction.toString(2).padStart(32, '0')
+
+    // Mask bits
+    const b14_12 = (instruction >> 12) & 0b111
+    const b6_0 = instruction & 0b1111111
+
+    let imm = binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24)
+
+    imm = imm.padStart(32, imm[0])
+    imm = parseInt(imm, 2)
+
+    if (b14_12 == 0b000 && b6_0 == 0b1100011) {
+        //beqDecode(instruction);
+    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
+        //bltDecode(instruction);
+    }
+}
+
 
 export const isBranch = (instruction) => {
     const b6_0 = instruction & 0b1111111
@@ -62,6 +82,36 @@ export const getDependencies = (instruction) => {
  *
  * @param instruction The binary (31:0) representation of the instruction.
  */
+export const IDInstruction = (instruction) => {
+    const binaryRep = instruction.toString(2).padStart(32, '0')
+
+    // Mask bits
+    const b14_12 = (instruction >> 12) & 0b111
+    const b6_0 = instruction & 0b1111111
+
+    // yanderedev ass ifelse tower
+    if (b14_12 == 0b010 && b6_0 == 0b0000011) {
+        lwDecode(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
+        //swDecode(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+        sltDecode(instruction);
+    } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+        sllDecode(instruction);
+    } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+        slliDecode(instruction);
+    } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
+        beqDecode(instruction);
+    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
+        bltDecode(instruction);
+    }
+}
+
+/**
+ * Executes an instruction and modifies EX/MEM.ALUOUT and EX/MEM.COND
+ *
+ * @param instruction The binary (31:0) representation of the instruction.
+ */
 export const EXInstruction = (instruction) => {
     const binaryRep = instruction.toString(2).padStart(32, '0')
 
@@ -82,6 +132,55 @@ export const EXInstruction = (instruction) => {
         slliExecute(instruction);
     } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
         beqExecute(instruction);
+    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
+        bltExecute(instruction);
+    }
+}
+
+/**
+ * Executes an instruction and modifies EX/MEM.ALUOUT and EX/MEM.COND
+ *
+ * @param instruction The binary (31:0) representation of the instruction.
+ */
+export const MEMInstruction = (instruction) => {
+    const binaryRep = instruction.toString(2).padStart(32, '0')
+
+    // Mask bits
+    const b14_12 = (instruction >> 12) & 0b111
+    const b6_0 = instruction & 0b1111111
+
+    // yanderedev ass ifelse tower
+    if (b14_12 == 0b010 && b6_0 == 0b0000011) {
+        lwMem(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
+    } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+    } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+    } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+    } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
+    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
+    }
+}
+
+/**
+ * Executes an instruction and modifies EX/MEM.ALUOUT and EX/MEM.COND
+ *
+ * @param instruction The binary (31:0) representation of the instruction.
+ */
+export const WBInstruction = (instruction) => {
+    const binaryRep = instruction.toString(2).padStart(32, '0')
+
+    // Mask bits
+    const b14_12 = (instruction >> 12) & 0b111
+    const b6_0 = instruction & 0b1111111
+
+    // yanderedev ass ifelse tower
+    if (b14_12 == 0b010 && b6_0 == 0b0000011) {
+        lwWB(instruction);
+    } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
+    } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+    } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+    } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+    } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
     } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
         bltExecute(instruction);
     }

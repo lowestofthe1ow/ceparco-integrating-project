@@ -1,5 +1,5 @@
-import { memory, registersInt } from '$lib/riscv/state.svelte.js';
-import { EXInstruction, getDependencies, getRD, isBranch } from '$lib/riscv/instructions.js'
+import { memory, registersInt, setRegValue, getRegValue } from '$lib/riscv/state.svelte.js';
+import { IDInstruction, EXInstruction, MEMInstruction, WBInstruction, getDependencies, getRD, isBranch } from '$lib/riscv/instructions.js'
 
 /**
  * Checks if any dependencies exist between a stage and a set of possible
@@ -13,7 +13,6 @@ const checkDependencies = (stalledStage, stallers) => {
     for (const staller of stallers) {
         if (staller) {
             let dependencies = getDependencies(stalledStage.IR);
-            console.log(dependencies)
             if (dependencies.includes(getRD(staller.IR))) {
                 console.log("Dependency found. Stalling execution...")
                 foundStallingDependency = true
@@ -90,30 +89,48 @@ export class Pipeline {
         // WB stage
         this.WB.IR = this.MEM_WB.IR;
         this.stageCycles[this.WB.IR]?.push(this.cycle)
+        WBInstruction(this.WB.IR)
 
         // MEM stage
         this.MEM_WB.IR = this.EX_MEM.IR;
         this.stageCycles[this.MEM_WB.IR]?.push(this.cycle)
+        MEMInstruction(this.MEM_WB.IR);
 
         // EX stage
         this.EX_MEM.IR = this.ID_EX.IR;
         this.stageCycles[this.EX_MEM.IR]?.push(this.cycle)
 
+        // Execute the instruction in the EX/MEM stage
+        EXInstruction(this.EX_MEM.IR)
+
         // ID stage
+        // We check here if stalled by any dependencies
         if (this.IF_ID.stalled) {
             this.ID_EX.IR = NaN
         } else {
+            this.ID_EX.NPC = this.IF_ID.NPC; // Copy the NPC
             this.ID_EX.IR = this.IF_ID.IR;
+
+            // Decode the instruction in the ID/EX stage
+            IDInstruction(this.ID_EX.IR)
             this.stageCycles[this.ID_EX.IR]?.push(this.cycle)
-            // this.ID_EX.NPC = this.IF_ID.PC;
 
             // IF stage
             this.IF_ID.IR = memory.readInteger(this.IF_ID.PC, 4);
             this.IF_ID.NPC = this.IF_ID.PC
-            this.IF_ID.PC += 4; // TODO: Handle branch
+
+            // For pipeline #2, we check for branch in the IF stage
+            if (isBranch(this.ID_EX.IR)) {
+                // When a branch instruction is decoded, perform the jump
+                EXInstruction(this.ID_EX.IR)
+            } else {
+                this.IF_ID.PC += 4; // TODO: Handle branch
+            }
 
             if (this.IF_ID.IR) {
-                this.stageCycles[this.IF_ID.IR] = []}
+                // For newly fetched instructions, make a new array for stages
+                this.stageCycles[this.IF_ID.IR] = []
+            }
             this.stageCycles[this.IF_ID.IR]?.push(this.cycle)
         }
 

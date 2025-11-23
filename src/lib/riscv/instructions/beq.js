@@ -1,5 +1,5 @@
 // If you need access to memory and registers, include this import
-import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt, getRegValue } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
 
@@ -11,17 +11,19 @@ import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
  */
 export const beqExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
-    let rs1 = resgisterInt.get(parseInt(binaryRep.slice(12, 17), 2))
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
-    let imm = parseInt(binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24), 2)
 
-    pipeline.EX_MEM.ALUOUT = pipeline.ID_EX.NPC + imm - 8 // TODO: -8 is a hack fix kasi idt tama yung address na lumalabas
 
+    console.log("BEQ regs: " + rs1 + " vs " + rs2)
+    console.log("BEQ: " + getRegValue(rs1) + " vs " + getRegValue(rs2))
+
+    // TODO: Clear the rest of the pipeline after the branch executes
     const entries = [...registersInt]
-    if(registersInt.get(rs1) == registersInt.get(rs1)){
-        pipeline.EX_MEM.COND = 3
+    if (getRegValue(rs1) == getRegValue(rs2)){
+        pipeline.IF_ID.PC = ((pipeline.ID_EX.IMM << 1) + pipeline.IF_ID.NPC) >>> 0
     } else {
-        pipeline.EX_MEM.COND = 0
+        pipeline.IF_ID.PC += 4
     }
 }
 
@@ -43,7 +45,12 @@ export const beqDecode = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
-    let imm = parseInt(binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24), 2)
+    let imm = binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24)
+
+    console.log("BEQDECODE IMM =" + imm)
+
+    imm = imm.padStart(32, imm[0])
+    imm = parseInt(imm, 2)
 
     const entries = [...registersInt]
     
