@@ -1,8 +1,8 @@
 import { lwExecute, lwDecode, lwMem, lwWB } from '$lib/riscv/instructions/lw.js'
 import { swExecute, swDecode, swMem, swWB } from '$lib/riscv/instructions/sw.js'
-import { sltExecute, sltDecode } from '$lib/riscv/instructions/slt.js'
-import { sllExecute, sllDecode } from '$lib/riscv/instructions/sll.js'
-import { slliExecute, slliDecode } from '$lib/riscv/instructions/slli.js'
+import { sltExecute, sltDecode, sltMem, sltWB  } from '$lib/riscv/instructions/slt.js'
+import { sllExecute, sllDecode, sllMem, sllWB } from '$lib/riscv/instructions/sll.js'
+import { slliExecute, slliDecode, slliMem, slliWB } from '$lib/riscv/instructions/slli.js'
 import { beqExecute, beqDecode } from '$lib/riscv/instructions/beq.js'
 import { bltExecute, bltDecode } from '$lib/riscv/instructions/blt.js'
 
@@ -136,8 +136,11 @@ export const MEMInstruction = (instruction) => {
     } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
         swMem(instruction);
     } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+        sltMem(instruction);
     } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+        sllMem(instruction);
     } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+        slliMem(instruction);
     } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
     } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
     }
@@ -161,8 +164,11 @@ export const WBInstruction = (instruction) => {
     } else if (b14_12 == 0b010 && b6_0 == 0b0100011) {
         swWB(instruction);
     } else if (b14_12 == 0b010 && b6_0 == 0b0110011) {
+        sltWB(instruction);
     } else if (b14_12 == 0b001 && b6_0 == 0b0110011) {
+        sllWB(instruction);
     } else if (b14_12 == 0b001 && b6_0 == 0b0010011) {
+        slliWB(instruction);
     } else if (b14_12 == 0b000 && b6_0 == 0b1100011) {
     } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
         bltExecute(instruction);

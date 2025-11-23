@@ -14,10 +14,11 @@ import { pipeline, memory, registersInt,
 export const slliDecode = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
     let imm = parseInt(binaryRep.slice(0, 12), 2)
     
     pipeline.ID_EX.A = getRegValue(rs1)
-    pipeline.ID_EX.B = pipeline.EX_MEM.B
+    pipeline.ID_EX.B = getRegValue(rs2)
     pipeline.ID_EX.IMM = imm
 }
 
@@ -29,9 +30,11 @@ export const slliDecode = (bin) => {
  */
 export const slliExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
     
-    pipeline.EX_MEM.ALUOUT = pipeline.MEM_WB.ALUOUT
+    pipeline.EX_MEM.ALUOUT = getRegValue(rs1) << imm
     pipeline.EX_MEM.B = getRegValue(rs2)
     pipeline.EX_MEM.COND = 0
 }
@@ -41,10 +44,13 @@ export const slliExecute = (bin) => {
  * 
  * @param bin The binary (31:0) representation of the instruction.
  */
-export const lwMem = (bin) => {
-    pipeline.MEM_WB.LMD = "N/A"
-    pipeline.MEM_WB.ALUOUT = pipeline.WB.REGISTER
-    pipeline.MEM_WB.MEMORY = "N/A"
+export const slliMem = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
+
+    pipeline.MEM_WB.ALUOUT = pipeline.EX_MEM.ALUOUT
 }
 
 /**
@@ -58,7 +64,7 @@ export const slliWB = (bin) => {
     let rs1 = parseInt(binaryRep.slice(7, 12), 2)
     let rd = parseInt(binaryRep.slice(20, 25), 2)
     
-    pipeline.WB.REGISTER = getRegValue(rs1) << imm
+    pipeline.WB.REGISTER = pipeline.MEM_WB.ALUOUT
     setRegValue(rd, pipeline.WB.REGISTER)
 }
 
