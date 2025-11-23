@@ -27,7 +27,7 @@
         try {
             // Clear all memory and program data
             memory.clear();
-            program.data = {};
+            program.data = null;
             pipeline.initialize();
 
             // Reset error objcet
