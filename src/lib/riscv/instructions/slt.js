@@ -16,9 +16,12 @@ export const sltExecute = (bin) => {
     // TODO: Move to a writeback function
     // let rd = parseInt(binaryRep.slice(20, 25), 2)
     
-    let value = registersInt.get(rs1) < registersInt.get(rs2) ? 1 : 0
+    const entries = [...registersInt]
+    let value = entries[rs1]?.[1] < entries[rs2]?.[1] ? 1 : 0
 
     pipeline.EX_MEM.ALUOUT = value
+    pipeline.EX_MEM.B = entries[rs2]?.[1]
+    pipeline.EX_MEM.COND = 0
 }
 
 /**
@@ -35,6 +38,7 @@ export const sltDecode = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rs1 = parseInt(binaryRep.slice(12, 17), 2)
     let rs2 = parseInt(binaryRep.slice(7, 12), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
 
     const entries = [...registersInt]
     
@@ -43,15 +47,17 @@ export const sltDecode = (bin) => {
     pipeline.ID_EX.IMM = imm
 }
 
-export const sltMemory = () => {
+export const sltMem = () => {
     pipeline.MEM_WB.ALUOUT = pipeline.EX_MEM.ALUOUT
+    pipeline.MEM_WB.B = pipeline.EX_MEM.B
 }
 
-export const sltWriteback = (bin) => {
+export const sltWB = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
     let rd = parseInt(binaryRep.slice(20, 25), 2)
 
     const entries = [...registersInt]
     
     registersInt.set(entries[rd]?.[0], pipeline.MEM_WB.ALUOUT)
+    pipeline.WB.REGISTER = pipeline.MEM_WB.ALUOUT
 }
