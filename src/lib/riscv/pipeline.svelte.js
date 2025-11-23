@@ -112,7 +112,8 @@ export class Pipeline {
 
         // WB stage
         this.WB.IR = this.MEM_WB.IR;
-        this.addToCycleMap(4, this.WB.IR)
+        this.addToCycleMap(4, this.WB.IR);
+        WBInstruction(this.WB.IR);
 
         // MEM stage
         this.MEM_WB.IR = this.EX_MEM.IR;
