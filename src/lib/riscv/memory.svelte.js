@@ -31,9 +31,12 @@ export class Memory {
     }
 
     storeByte(address, value) {
-        // TODO: Check for if value is in range
+
         if(value >= 0 && value <= 255){
             this.memory[address] = value;
+        } else {
+            // Overflow
+            this.memory[address] = 0;
         }
     }
 }

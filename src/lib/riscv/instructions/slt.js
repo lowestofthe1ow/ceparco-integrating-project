@@ -49,7 +49,6 @@ export const sltDecode = (bin) => {
 
 export const sltMem = () => {
     pipeline.MEM_WB.ALUOUT = pipeline.EX_MEM.ALUOUT
-    pipeline.MEM_WB.B = pipeline.EX_MEM.B
 }
 
 export const sltWB = (bin) => {
