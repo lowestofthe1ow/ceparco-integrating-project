@@ -80,6 +80,7 @@ export const parse = (input) => {
 
     let currentSection = sections.NONE
 
+    let currentTakenDataAddress = 0;
     mainLoop:
     for(let [index, line] of lines.entries()) {
         let i = index + 1 // True line number is +1
@@ -155,6 +156,8 @@ export const parse = (input) => {
                     if(hexAllowedRegex.test(dataArgs[j]) || binAllowedRegex.test(dataArgs[j])
                         || decAllowedRegex.test(dataArgs[j])) {
                         // TODO: Insert into memory
+                        memory.storeInteger(currentTakenDataAddress,dataArgs[j],4)
+                        currentTakenDataAddress += 4
                     } else {
                         throw { message: "Invalid variable declaration", line: i }
                     }
