@@ -3,6 +3,8 @@
     import RegisterViewer from '$lib/components/RegisterViewer.svelte';
     import MemoryViewer from '$lib/components/MemoryViewer.svelte';
     import PipelineRegisterViewer from '$lib/components/PipelineRegisterViewer.svelte';
+    import PipelineMapViewer from '$lib/components/PipelineMapViewer.svelte';
+
     import Editor from '$lib/components/Editor.svelte';
     import { parse } from '$lib/riscv/riscv.js';
     import { memory, pipeline, program, registersInt } from '$lib/riscv/state.svelte.js';
@@ -45,9 +47,6 @@
             for (let i = 0; i < program.data.instructions.length; i++) {
                 memory.storeInteger(0x0080 + i*4, program.data.instructions[i], 4)
             }
-
-            // Do stuff with program
-            console.log(program)
         } catch (e) {
             error = e;
             editor.highlightLine(e.line);
@@ -109,6 +108,15 @@
             </hgroup>
 
             <InstructionViewer />
+        </div>
+
+        <div>
+            <hgroup class="header">
+                <IconLayers class="icon--header"/>
+                <h2 style="margin: 0">Pipeline map</h2>
+            </hgroup>
+
+            <PipelineMapViewer />
         </div>
 
         <div>

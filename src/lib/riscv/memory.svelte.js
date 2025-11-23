@@ -10,7 +10,8 @@ export class Memory {
         // TODO: Check for if value is in range
 
         for (let i = 0; i < n; i++) {
-            this.memory[address + i] = (value >> i * 8) & 0xFF;
+            // The >>> 0 will keep the value as an unsigned integer
+            this.memory[address + i] = (((value >> i * 8) >>> 0) & 0xFF) >>> 0;
         }
     }
 
@@ -22,7 +23,8 @@ export class Memory {
         let retval = 0;
 
         for (let i = 0; i < n; i++) {
-            retval += this.memory[address + i] << (i * 8);
+            // The >>> 0 will keep the value as an unsigned integer
+            retval += (this.memory[address + i] << (i * 8)) >>> 0;
         }
 
         return retval;

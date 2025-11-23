@@ -7,24 +7,10 @@
     let decorations = [];
 
     // Sample text
-    let sample = `.data
-x1: .word 100, 0x9FFF, 0b00101 # comment1
-
-#comment 2
-
-.text
-
-main:
-    LW x5, 0(x1)
-    slli x6, x5, 2
-    BEQ x7, x0, L1
-    SW x6, 4(x1)
-    SLLI x30, x31, 0x1
-    SLT x7, x5, x6
-    BLT x0, x5, L1
-    BEQ x1, x2, L1
-    
-L1: SLL x10, x7, x6`
+    let sample = `.text
+main: LW x6, 0(x1)
+      LW x9, 0(x1)
+      BEQ x6, x9, main`
 
     onMount(async () => {
         monaco = await import('monaco-editor');

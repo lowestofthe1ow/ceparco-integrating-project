@@ -21,6 +21,42 @@ BEQ                 000         1100011
 BLT                 100         1100011
 ----------------------------------------------------------------------------- */
 
+export const isBranch = (instruction) => {
+    const b6_0 = instruction & 0b1111111
+    return b6_0 == 0b1100011
+}
+
+export const getRD = (instruction) => {
+    // Mask bits
+    const b11_7 = (instruction >> 7) & 0b11111
+    const b6_0 = instruction & 0b1111111
+
+    // lmfao
+    if (b6_0 == 0b0000011    // LW
+     || b6_0 == 0b0110011    // SLT / SLL
+     || b6_0 == 0b0010011) { // SLLI
+        return b11_7
+    } else {
+        return null
+    }
+}
+
+export const getDependencies = (instruction) => {
+    // Mask bits
+    const b24_20 = (instruction >> 20) & 0b11111 // rs2
+    const b19_15 = (instruction >> 15) & 0b11111 // rs1
+    const b11_7 = (instruction >> 7) & 0b11111
+    const b6_0 = instruction & 0b1111111
+
+    // lmfao
+    if (b6_0 == 0b0000011    // LW
+        || b6_0 == 0b0010011) { // SLLI
+            return [b19_15] // these instructions have rs1
+        } else {
+            return [b19_15, b24_20] // these instructions have rs1 and rs2
+        }
+}
+
 /**
  * Executes an instruction and modifies EX/MEM.ALUOUT and EX/MEM.COND
  *
