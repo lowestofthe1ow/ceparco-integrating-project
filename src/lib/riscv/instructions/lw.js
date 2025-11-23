@@ -6,8 +6,8 @@ import { pipeline, memory, registersInt,
 
 /**
  * Decodes an lw instruction.
- * A <- Regs[IF/ID[rs1]]
- * B <- Regs[IF/UD[rs2]]
+ * A := Regs[IF/ID[rs1]]
+ * B := Regs[IF/UD[rs2]]
  * 
  * @param bin The binary (31:0) representation of the instruction.
  */

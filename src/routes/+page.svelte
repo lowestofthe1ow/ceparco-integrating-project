@@ -125,11 +125,13 @@
                 <h2 style="margin: 0">Pipeline registers</h2>
             </hgroup>
 
-            <PipelineRegisterViewer />
-
             <div class="editor__tray">
                 <button class="editor__tray__button" on:click={step}><IconPlay />Step</button>
             </div>
+
+            <PipelineRegisterViewer />
+
+
         </div>
     </div>
 </div>

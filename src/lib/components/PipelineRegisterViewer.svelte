@@ -25,7 +25,7 @@
                 <td class='viewer__label'>
                     <span style="color: gray">IF/ID.</span>{key}
                 </td>
-                <td class='viewer__label'>{formatAsHex(value, 8)}</td>
+                <td class='viewer__label'>{#if !isNaN(value)}{formatAsHex(value, 8)}{:else}<span style="color: gray">N/A</span>{/if}</td>
             </tr>
         {/each}
 
@@ -36,7 +36,7 @@
                 <td class='viewer__label'>
                     <span style="color: gray">ID/EX.</span>{key}
                 </td>
-                <td class='viewer__label'>{formatAsHex(value, 8)}</td>
+                <td class='viewer__label'>{#if !isNaN(value)}{formatAsHex(value, 8)}{:else}<span style="color: gray">N/A</span>{/if}</td>
             </tr>
         {/each}
 
@@ -47,7 +47,7 @@
                 <td class='viewer__label'>
                     <span style="color: gray">EX/MEM.</span>{key}
                 </td>
-                <td class='viewer__label'>{formatAsHex(value, 8)}</td>
+                <td class='viewer__label'>{#if !isNaN(value)}{formatAsHex(value, 8)}{:else}<span style="color: gray">N/A</span>{/if}</td>
             </tr>
         {/each}
 
@@ -58,7 +58,7 @@
                 <td class='viewer__label'>
                     <span style="color: gray">MEM/WB.</span>{key}
                 </td>
-                <td class='viewer__label'>{formatAsHex(value, 8)}</td>
+                <td class='viewer__label'>{#if !isNaN(value)}{formatAsHex(value, 8)}{:else}<span style="color: gray">N/A</span>{/if}</td>
             </tr>
         {/each}
 
@@ -69,7 +69,7 @@
                 <td class='viewer__label'>
                     <span style="color: gray">WB.</span>{key}
                 </td>
-                <td class='viewer__label'>{formatAsHex(value, 8)}</td>
+                <td class='viewer__label'>{#if !isNaN(value)}{formatAsHex(value, 8)}{:else}<span style="color: gray">N/A</span>{/if}</td>
             </tr>
         {/each}
     </tbody>

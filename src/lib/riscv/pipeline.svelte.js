@@ -24,6 +24,8 @@ const checkDependencies = (stalledStage, stallers) => {
     stalledStage.stalled = foundStallingDependency
 }
 
+
+
 export class Pipeline {
     // Set up reactive states
     IF_ID = $state({});
@@ -32,7 +34,23 @@ export class Pipeline {
     MEM_WB = $state({});
     WB = $state({});
     cycle = $state(1);
-    stageCycles = $state({});
+    stageCycles = $state([{}]);
+    cutOffBranch = false;
+    rowCount = 0;
+
+    addToCycleMap(stage, instruction) {
+        const row = this.stageCycles.find(x => {
+            return x.stage === stage && x.instruction === instruction;
+        })
+
+        if (row) {
+            row.stage += 1
+            row.cycles.push(this.cycle)
+
+            console.log(row)
+        }
+
+    }
 
     constructor() {
         this.initialize();
@@ -40,40 +58,40 @@ export class Pipeline {
 
     initialize() {
         this.IF_ID = {
-            IR: 0,
+            IR: NaN,
             PC: 0x80,
-            NPC: 0,
+            NPC: NaN,
             stalled: false
         };
 
         this.ID_EX = {
-            IR: 0,
-            A: 0,
-            B: 0,
-            IMM: 0,
-            NPC: 0,
+            IR: NaN,
+            A: NaN,
+            B: NaN,
+            IMM: NaN,
+            NPC: NaN,
             stalled: false
         };
 
         this.EX_MEM = {
-            IR: 0,
-            ALUOUT: 0,
-            B: 0,
-            COND: 0,
+            IR: NaN,
+            ALUOUT: NaN,
+            B: NaN,
+            COND: NaN,
             stalled: false
         }
 
         this.MEM_WB = {
-            IR: 0,
-            LMD: 0,
-            ALUOUT: 0,
-            MEMORY: 0,
+            IR: NaN,
+            LMD: NaN,
+            ALUOUT: NaN,
+            MEMORY: NaN,
             stalled: false
         }
 
         this.WB = {
-            IR: 0,
-            REGISTER: 0,
+            IR: NaN,
+            REGISTER: NaN,
             stalled: false
         }
 
@@ -81,6 +99,12 @@ export class Pipeline {
     }
 
     step() {
+        if (this.cutOffBranch) {
+            this.IF_ID.IR = NaN
+            this.ID_EX.IR = NaN
+            this.cutOffBranch = false;
+        }
+
         // If ID/EX.IR or EX/MEM.IR modifies an operand of IF/ID.IR, then stall
         // Otherwise, then that means all dependencies are at least at MEM/WB
         // ...which means IF/ID can stop stalling in the next cycle
@@ -88,17 +112,16 @@ export class Pipeline {
 
         // WB stage
         this.WB.IR = this.MEM_WB.IR;
-        this.stageCycles[this.WB.IR]?.push(this.cycle)
-        WBInstruction(this.WB.IR)
+        this.addToCycleMap(4, this.WB.IR)
 
         // MEM stage
         this.MEM_WB.IR = this.EX_MEM.IR;
-        this.stageCycles[this.MEM_WB.IR]?.push(this.cycle)
+        this.addToCycleMap(3, this.MEM_WB.IR)
         MEMInstruction(this.MEM_WB.IR);
 
         // EX stage
         this.EX_MEM.IR = this.ID_EX.IR;
-        this.stageCycles[this.EX_MEM.IR]?.push(this.cycle)
+        this.addToCycleMap(2, this.EX_MEM.IR)
 
         // Execute the instruction in the EX/MEM stage
         EXInstruction(this.EX_MEM.IR)
@@ -113,11 +136,21 @@ export class Pipeline {
 
             // Decode the instruction in the ID/EX stage
             IDInstruction(this.ID_EX.IR)
-            this.stageCycles[this.ID_EX.IR]?.push(this.cycle)
+            this.addToCycleMap(1, this.ID_EX.IR)
 
             // IF stage
             this.IF_ID.IR = memory.readInteger(this.IF_ID.PC, 4);
             this.IF_ID.NPC = this.IF_ID.PC
+
+            if (this.IF_ID.IR) {
+                // For newly fetched instructions, make a new array for stages
+                let newRow = {
+                    stage: 0, // Start at IF
+                    cycles: [],
+                    instruction: this.IF_ID.IR
+                }
+                this.stageCycles.push(newRow)
+            }
 
             // For pipeline #2, we check for branch in the IF stage
             if (isBranch(this.ID_EX.IR)) {
@@ -127,11 +160,8 @@ export class Pipeline {
                 this.IF_ID.PC += 4; // TODO: Handle branch
             }
 
-            if (this.IF_ID.IR) {
-                // For newly fetched instructions, make a new array for stages
-                this.stageCycles[this.IF_ID.IR] = []
-            }
-            this.stageCycles[this.IF_ID.IR]?.push(this.cycle)
+
+            this.addToCycleMap(0, this.IF_ID.IR)
         }
 
         this.cycle += 1;

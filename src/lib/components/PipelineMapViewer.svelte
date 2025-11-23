@@ -13,36 +13,36 @@
         }
     }
 </script>
-
-<table class='viewer'>
-    <tbody>
-        <tr class='viewer__row'>
-            <th class='viewer__label viewer__label--header'>Instruction</th>
-            {#each { length: pipeline.cycle - 1 } as _, i}
-                <th class='viewer__label'>
-                    Cycle {i+1}
-                </th>
-            {/each}
-        </tr>
-
-        {#each Object.entries(pipeline.stageCycles) as [key, value]}
+{Object.keys(pipeline.stageCycles[0])}
+<div class='viewer' style="overflow-x: auto; width: auto">
+    <table style='display: table; width: 100%; table-layout: fixed;'>
+        <tbody >
             <tr class='viewer__row'>
-                <td class='viewer__label'>
-                    <!-- TODO: Lmao this doesn't work with identical instructions -->
-                    {program.data.lines[program.data.instructions.indexOf(Number(key) >>> 0)]}
-                </td>
+                <th class='viewer__label viewer__label--header' style="min-width: 100px; ">Instruction</th>
                 {#each { length: pipeline.cycle - 1 } as _, i}
-                    <td class='viewer__label'>
-                        {#if value[0] == i+1}IF
-                        {:else if value[1] == i+1}ID
-                        {:else if value[2] == i+1}EX
-                        {:else if value[3] == i+1}MEM
-                        {:else if value[4] == i+1}WB
-                        {:else if value[0] < i+1 && value[4] > i+1}*
-                        {/if}
-                    </td>
+                    <th class='viewer__label' style="min-width: 20px; ">
+                        {i+1}
+                    </th>
                 {/each}
             </tr>
-        {/each}
-    </tbody>
-</table>
+
+            {#each pipeline.stageCycles as row}
+                <tr class='viewer__row'>
+                    <td class='viewer__label' style='min-width: 100px;'>
+                        {program.data?.lines[program.data.instructions.indexOf(Number(row.instruction) >>> 0)]}
+                    </td>
+                    {#each { length: pipeline.cycle - 1 } as _, i}
+                        <td class='viewer__label' style='min-width: 20px; text-align: center'>
+                            {#if row.cycles?.indexOf(i+1) % 5 == 0}IF
+                            {:else if row.cycles?.indexOf(i+1) % 5 == 1}ID
+                            {:else if row.cycles?.indexOf(i+1) % 5 == 2}EX
+                            {:else if row.cycles?.indexOf(i+1) % 5 == 3}MEM
+                            {:else if row.cycles?.indexOf(i+1) % 5 == 4}WB
+                            {/if}
+                        </td>
+                    {/each}
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>

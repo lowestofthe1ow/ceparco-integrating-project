@@ -21,26 +21,6 @@ BEQ                 000         1100011
 BLT                 100         1100011
 ----------------------------------------------------------------------------- */
 
-export const pipeline2Branch = (instruction) => {
-    const binaryRep = instruction.toString(2).padStart(32, '0')
-
-    // Mask bits
-    const b14_12 = (instruction >> 12) & 0b111
-    const b6_0 = instruction & 0b1111111
-
-    let imm = binaryRep[0] + binaryRep[24] + binaryRep.slice(1, 7) + binaryRep.slice(20, 24)
-
-    imm = imm.padStart(32, imm[0])
-    imm = parseInt(imm, 2)
-
-    if (b14_12 == 0b000 && b6_0 == 0b1100011) {
-        //beqDecode(instruction);
-    } else if (b14_12 == 0b100 && b6_0 == 0b1100011) {
-        //bltDecode(instruction);
-    }
-}
-
-
 export const isBranch = (instruction) => {
     const b6_0 = instruction & 0b1111111
     return b6_0 == 0b1100011
@@ -61,6 +41,7 @@ export const getRD = (instruction) => {
     }
 }
 
+/** @return [RS1] or [RS1, RS2] */
 export const getDependencies = (instruction) => {
     // Mask bits
     const b24_20 = (instruction >> 20) & 0b11111 // rs2
