@@ -55,7 +55,7 @@ export const lwMem = (bin) => {
 
 
     pipeline.MEM_WB.LMD = memory.readInteger(pipeline.EX_MEM.ALUOUT, 4)
-    pipeline.MEM_WB.ALUOUT = NaN;
+    pipeline.MEM_WB.ALUOUT = pipeline.EX_MEM.ALUOUT;
     pipeline.MEM_WB.MEMORY = NaN;
 }
 
@@ -74,6 +74,7 @@ export const lwWB = (bin) => {
 
     console.log("LMD = " + pipeline.MEM_WB.LMD)
 
+    pipeline.WB.REGISTER = pipeline.MEM_WB.LMD
     setRegValue(rd, pipeline.MEM_WB.LMD)
 }
 
