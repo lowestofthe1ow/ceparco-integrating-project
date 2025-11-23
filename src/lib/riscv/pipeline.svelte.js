@@ -1,6 +1,12 @@
 import { memory, registersInt, setRegValue, getRegValue } from '$lib/riscv/state.svelte.js';
 import { IDInstruction, EXInstruction, MEMInstruction, WBInstruction, getDependencies, getRD, isBranch } from '$lib/riscv/instructions.js'
 
+
+export const isMemory = (instruction) => {
+    const b6_0 = instruction & 0b1111111
+    return b6_0 == 0b0000011 || b6_0 == 0b100011
+}
+
 /**
  * Checks if any dependencies exist between a stage and a set of possible
  * staller stages e.g. checkDependencies(IF/ID, [ID/EX, EX/MEM]) will check if
@@ -11,13 +17,44 @@ const checkDependencies = (stalledStage, stallers) => {
     let foundStallingDependency = false
 
     for (const staller of stallers) {
+
+
         if (staller) {
-            let dependencies = getDependencies(stalledStage.IR);
-            if (dependencies.includes(getRD(staller.IR))) {
-                console.log("Dependency found. Stalling execution...")
-                foundStallingDependency = true
-                break
+            const staller_b6_0 = staller.IR & 0b1111111
+            const stalled_b6_0 = stalledStage.IR & 0b1111111
+
+            // TODO: Wow this is awful
+            // Staller is SW, stalled is LW
+            if (stalled_b6_0 == 0b0000011 && staller_b6_0 == 0b100011) {
+
+                let staller_binaryRep = staller.IR.toString(2).padStart(32, '0')
+                let staller_a = getRegValue(parseInt(staller_binaryRep.slice(12, 17), 2))
+                let staller_imm = parseInt(staller_binaryRep.slice(0, 7) + staller_binaryRep.slice(20, 25), 2)
+
+                let stalled_binaryRep = stalledStage.IR.toString(2).padStart(32, '0')
+                let stalled_a = getRegValue(parseInt(stalled_binaryRep.slice(12, 17), 2))
+                let stalled_imm = parseInt(stalled_binaryRep.slice(0, 12), 2)
+
+                console.log("staller: " + (staller_a + staller_imm))
+                console.log("stalled: " + (stalled_a + stalled_imm))
+
+                if (staller_a + staller_imm == stalled_a + stalled_imm) {
+                    console.log("Dependency found. Stalling execution...")
+                    foundStallingDependency = true
+                    break
+                }
+            } else {
+                let dependencies = getDependencies(stalledStage.IR);
+                if (dependencies.includes(getRD(staller.IR))) {
+                    console.log("Dependency found. Stalling execution...")
+                    foundStallingDependency = true
+                    break
+                }
             }
+
+
+
+
         }
     }
 
