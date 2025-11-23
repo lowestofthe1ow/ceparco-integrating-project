@@ -155,8 +155,10 @@ export const parse = (input) => {
                     if(hexAllowedRegex.test(dataArgs[j]) || binAllowedRegex.test(dataArgs[j])
                         || decAllowedRegex.test(dataArgs[j])) {
                         // TODO: Insert into memory
-                        memory.storeInteger(currentTakenDataAddress,dataArgs[j],4)
-                        currentTakenDataAddress += 4
+                        if(!(currentTakenDataAddress + 4 > 0x7F)){
+                            memory.storeInteger(currentTakenDataAddress,dataArgs[j],4)
+                            currentTakenDataAddress += 4
+                        }
                     } else {
                         throw { message: "Invalid variable declaration", line: i }
                     }

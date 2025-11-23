@@ -8,9 +8,10 @@ export class Memory {
     /** Stores an n-byte integer value at an address */
     storeInteger(address, value, n) {
         // TODO: Check for if value is in range
-
-        for (let i = 0; i < n; i++) {
-            this.memory[address + i] = (((value >> i * 8)) & 0xFF);
+        if(value >= 0 && value <= 0xFFFFFFFF){
+            for (let i = 0; i < n; i++) {
+                this.memory[address + i] = (((value >> i * 8)) & 0xFF);
+            }   
         }
     }
 
@@ -31,6 +32,8 @@ export class Memory {
 
     storeByte(address, value) {
         // TODO: Check for if value is in range
-        this.memory[address] = value;
+        if(value >= 0 && value <= 255){
+            this.memory[address] = value;
+        }
     }
 }
