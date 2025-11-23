@@ -13,7 +13,7 @@
         }
     }
 </script>
-{Object.keys(pipeline.stageCycles[0])}
+
 <div class='viewer' style="overflow-x: auto; width: auto">
     <table style='display: table; width: 100%; table-layout: fixed;'>
         <tbody >

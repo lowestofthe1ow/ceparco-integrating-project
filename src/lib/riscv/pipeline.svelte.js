@@ -96,6 +96,8 @@ export class Pipeline {
         }
 
         this.cycle = 1;
+
+        this.stageCycles = [{}];
     }
 
     step() {
