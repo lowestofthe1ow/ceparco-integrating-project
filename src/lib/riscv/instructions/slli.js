@@ -1,7 +1,25 @@
 // If you need access to memory and registers, include this import
-import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
+import { pipeline, memory, registersInt,
+        getRegValue, setRegValue } from '$lib/riscv/state.svelte.js'
 
 // Follow this pattern for all other instructions
+
+/**
+ * Decodes an slli instruction.
+ * A <- Regs[IF/ID[rs1]]
+ * B <- Regs[IF/UD[rs2]]
+ * 
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const slliDecode = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let rs1 = parseInt(binaryRep.slice(12, 17), 2)
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
+    
+    pipeline.ID_EX.A = getRegValue(rs1)
+    pipeline.ID_EX.B = pipeline.EX_MEM.B
+    pipeline.ID_EX.IMM = imm
+}
 
 /**
  * Executes an slli instruction.
@@ -11,14 +29,37 @@ import { pipeline, memory, registersInt } from '$lib/riscv/state.svelte.js'
  */
 export const slliExecute = (bin) => {
     let binaryRep = bin.toString(2).padStart(32, '0')
-    let imm0to4 = parseInt(binaryRep.slice(12, 17), 2)
-    let rs1 = parseInt(binaryRep.slice(7, 12), 2)
-    // TODO: Move to a writeback function
-    // let rd = parseInt(binaryRep.slice(20, 25), 2)
+    let rs2 = parseInt(binaryRep.slice(7, 12), 2)
     
-    let shiftedVal = registersInt.get(rs1) << imm0to4
+    pipeline.EX_MEM.ALUOUT = pipeline.MEM_WB.ALUOUT
+    pipeline.EX_MEM.B = getRegValue(rs2)
+    pipeline.EX_MEM.COND = 0
+}
 
-    pipeline.EX_MEM.ALUOUT = shiftedVal
+/**
+ * Mems an slli instruction.
+ * 
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const lwMem = (bin) => {
+    pipeline.MEM_WB.LMD = "N/A"
+    pipeline.MEM_WB.ALUOUT = pipeline.WB.REGISTER
+    pipeline.MEM_WB.MEMORY = "N/A"
+}
+
+/**
+ * Writes back an slli instruction.
+ * 
+ * @param bin The binary (31:0) representation of the instruction.
+ */
+export const slliWB = (bin) => {
+    let binaryRep = bin.toString(2).padStart(32, '0')
+    let imm = parseInt(binaryRep.slice(0, 12), 2)
+    let rs1 = parseInt(binaryRep.slice(7, 12), 2)
+    let rd = parseInt(binaryRep.slice(20, 25), 2)
+    
+    pipeline.WB.REGISTER = getRegValue(rs1) << imm
+    setRegValue(rd, pipeline.WB.REGISTER)
 }
 
 /**

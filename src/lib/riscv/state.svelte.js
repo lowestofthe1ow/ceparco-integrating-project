@@ -56,3 +56,13 @@ export const registersInt = $state(new SvelteMap([
     ['t5', 0],
     ['t6', 0],
 ]));
+
+/** Retruns the value stored in a register */
+export function getRegValue(regNum) {
+    return Array.from(registersInt.values())[regNum] 
+}
+
+/** Sets the value stored in a register */
+export function setRegValue(regNum, value) {
+    registersInt.set(Array.from(registersInt.keys())[regNum], value)
+}
