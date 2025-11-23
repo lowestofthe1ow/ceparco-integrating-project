@@ -97,7 +97,7 @@
             <Editor bind:this={editor} />
 
             <div class="editor__tray">
-                <button class="editor__tray__button" on:click={run}><IconPlay />Run</button>
+                <button class="editor__tray__button" on:click={run}><IconPlay />Load into memory</button>
                 <input class="editor__tray__button" type="file" accept=".asm" on:change={loadASM} />
             </div>
         </div>
@@ -113,6 +113,11 @@
             </hgroup>
 
             <InstructionViewer />
+
+            <div class="editor__tray">
+                <button class="editor__tray__button" on:click={step}><IconPlay />Run (single step)</button>
+                <button class="editor__tray__button" on:click={fullExec}><IconPlay />Run (full)</button>
+            </div>
         </div>
 
         <div>
@@ -129,12 +134,6 @@
                 <IconLayers class="icon--header"/>
                 <h2 style="margin: 0">Pipeline registers</h2>
             </hgroup>
-
-            <div class="editor__tray">
-                <button class="editor__tray__button" on:click={step}><IconPlay />Step</button>
-
-                <button class="editor__tray__button" on:click={fullExec}><IconPlay />Full execution</button>
-            </div>
 
             <PipelineRegisterViewer />
 
