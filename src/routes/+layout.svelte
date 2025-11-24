@@ -10,6 +10,7 @@
 </script>
 
 <svelte:head>
+	<title>&mu;RISC-V Simulator</title>
 	<link rel="stylesheet" href="./global.css" />
 	<link rel="icon" href={favicon} />
 </svelte:head>
