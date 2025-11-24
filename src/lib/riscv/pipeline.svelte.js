@@ -148,7 +148,7 @@ export class Pipeline {
 
 
         if (this.cutOffBranch) {
-            this.IF_ID.IR = NaN
+            // this.IF_ID.IR = NaN
             this.ID_EX.IR = NaN
             this.cutOffBranch = false;
         }
@@ -178,8 +178,10 @@ export class Pipeline {
         this.EX_MEM.IR = this.ID_EX.IR;
         this.addToCycleMap(2, this.EX_MEM.IR)
 
-        // Execute the instruction in the EX/MEM stage
-        EXInstruction(this.EX_MEM.IR)
+        if (!isBranch(this.ID_EX.IR)) {
+            // Execute the instruction in the EX/MEM stage
+            EXInstruction(this.EX_MEM.IR)
+        }
 
         if (isNaN(this.EX_MEM.IR)) {
             this.EX_MEM.ALUOUT = NaN
@@ -190,12 +192,14 @@ export class Pipeline {
         // ID stage
         // We check here if stalled by any dependencies
         if (this.IF_ID.stalled) {
+            // this.IF_ID.IR = NaN
             this.ID_EX.IR = NaN
             this.ID_EX.A = NaN
             this.ID_EX.B = NaN
             this.ID_EX.IMM = NaN
             this.ID_EX.NPC = NaN
         } else {
+            console.log("At this tage, IF/ID.NPC = " + this.IF_ID.NPC)
             this.ID_EX.NPC = this.IF_ID.NPC; // Copy the NPC
             this.ID_EX.IR = this.IF_ID.IR;
 
@@ -212,6 +216,7 @@ export class Pipeline {
             this.addToCycleMap(1, this.ID_EX.IR)
 
             // IF stage
+            console.log("At this tage, IF/ID.PC = " + this.IF_ID.PC)
             this.IF_ID.IR = memory.readInteger(this.IF_ID.PC, 4);
 
             if (this.IF_ID.IR == 0) {

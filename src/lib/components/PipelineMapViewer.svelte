@@ -16,32 +16,39 @@
 
 <div class='viewer' style="overflow-x: auto; width: auto">
     <table style='display: table; width: 100%; table-layout: fixed;'>
-        <tbody >
-            <tr class='viewer__row'>
-                <th class='viewer__label viewer__label--header' style="min-width: 100px; ">Instruction</th>
+        <tbody>
+            <tr class='viewer__row' style="display: table;">
+                <th class='viewer__label viewer__label--header' style="min-width: 120px; max-width: 150px;">Address</th>
+                <th class='viewer__label viewer__label--header' style="min-width: 150px; max-width: 150px;">Instruction</th>
                 {#each { length: pipeline.cycle - 1 } as _, i}
-                    <th class='viewer__label' style="min-width: 20px; ">
+                    <th class='viewer__label' style="min-width: 30px;  text-align: center;">
                         {i+1}
                     </th>
                 {/each}
             </tr>
 
             {#each pipeline.stageCycles as row}
-                <tr class='viewer__row'>
-                    <td class='viewer__label' style='min-width: 100px;'>
-                        {program.data?.lines[program.data.instructions.indexOf(Number(row.instruction) >>> 0)]}
-                    </td>
-                    {#each { length: pipeline.cycle - 1 } as _, i}
-                        <td class='viewer__label' style='min-width: 20px; text-align: center'>
-                            {#if row.cycles?.indexOf(i+1) % 5 == 0}IF
-                            {:else if row.cycles?.indexOf(i+1) % 5 == 1}ID
-                            {:else if row.cycles?.indexOf(i+1) % 5 == 2}EX
-                            {:else if row.cycles?.indexOf(i+1) % 5 == 3}MEM
-                            {:else if row.cycles?.indexOf(i+1) % 5 == 4}WB
-                            {/if}
+                {#if row.instruction}
+                    <tr class='viewer__row' style="display: table;">
+                        <td class='viewer__label' style='min-width: 120px; max-width: 150px;'>
+                            {formatAsHex(program.data?.instructions.indexOf(Number(row.instruction) >>> 0) * 4 + 0x80, 8)}
                         </td>
-                    {/each}
-                </tr>
+
+                        <td class='viewer__label' style='min-width: 150px; max-width: 150px;'>
+                            {program.data?.lines[program.data.instructions.indexOf(Number(row.instruction) >>> 0)]}
+                        </td>
+                        {#each { length: pipeline.cycle - 1 } as _, i}
+                            <td class='viewer__label' style='min-width: 30px; text-align: center;'>
+                                {#if row.cycles?.indexOf(i+1) % 5 == 0}IF
+                                {:else if row.cycles?.indexOf(i+1) % 5 == 1}ID
+                                {:else if row.cycles?.indexOf(i+1) % 5 == 2}EX
+                                {:else if row.cycles?.indexOf(i+1) % 5 == 3}MEM
+                                {:else if row.cycles?.indexOf(i+1) % 5 == 4}WB
+                                {/if}
+                            </td>
+                        {/each}
+                    </tr>
+                {/if}
             {/each}
         </tbody>
     </table>

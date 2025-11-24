@@ -39,6 +39,7 @@
             <!-- Value field -->
             <div>
                 <input
+                    disabled={startingAddress + index > 0x7F}
                     class='viewer__input'
                     type='text'
                     on:input={(e) =>

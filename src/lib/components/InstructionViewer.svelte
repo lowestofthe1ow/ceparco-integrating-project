@@ -16,7 +16,7 @@
         <tr class='viewer__row'>
             <th class='viewer__label viewer__label--header'>Address</th>
             <th class='viewer__label viewer__label--header'>Line</th>
-            <th class='viewer__label viewer__label--header'>Binary</th>
+            <th class='viewer__label viewer__label--header'>Hex</th>
         </tr>
         {#each getInstructions() ?? [] as instruction, index}
             <tr class='viewer__row'>
