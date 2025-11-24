@@ -162,6 +162,10 @@ export class Pipeline {
         this.addToCycleMap(4, this.WB.IR);
         WBInstruction(this.WB.IR);
 
+        if (isNaN(this.WB.IR)) {
+            this.WB.REGISTER = NaN;
+        }
+
         // MEM stage
         this.MEM_WB.IR = this.EX_MEM.IR;
         this.addToCycleMap(3, this.MEM_WB.IR)
@@ -234,13 +238,16 @@ export class Pipeline {
                     instruction: this.IF_ID.IR
                 }
                 this.stageCycles.push(newRow)
+            } else {
+                this.IF_ID.PC = NaN;
+                this.IF_ID.NPC = NaN;
             }
 
             // For pipeline #2, we check for branch in the IF stage
             if (isBranch(this.ID_EX.IR)) {
                 // When a branch instruction is decoded, perform the jump
                 EXInstruction(this.ID_EX.IR)
-            } else {
+            } else if (this.IF_ID.IR) {
                 this.IF_ID.PC += 4; // TODO: Handle branch
             }
 
