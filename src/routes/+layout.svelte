@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<link rel="stylesheet" href="/global.css" />
+	<link rel="stylesheet" href="./global.css" />
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
