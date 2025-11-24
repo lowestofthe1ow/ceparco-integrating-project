@@ -63,6 +63,10 @@ SvelteKit manages to streamline how we present the frontend for the application 
 
 We also found considerable difficulty with constructing the pipeline map. To account for **loops**, we simplify the process by dynamically updating the map every cycle. **A row is added for every instruction fetched, instead of having a fixed number of rows based on the length of the program**. This allows us to easily update each row per stage.
 
+## Execution screenshot
+
+![Program execution](img/page_screenshot.png)
+
 ## Milestones 1 and 2
 
 ### Updates (20 November 2025)
