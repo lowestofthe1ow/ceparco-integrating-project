@@ -5,6 +5,8 @@
 
 The application may be accessed [here](https://lowestofthe1ow.github.io/ceparco-integrating-project/).
 
+A demo video may be viewed [here](https://drive.google.com/file/d/1ynbkoh1QwuF1toIZbrdjQcD_8ES4Jj3h/view?usp=sharing).
+
 ## Design methodology
 
 **Supported instructions:** `LW`, `SW`, `SLT`, `SLL`, `SLLI`, `BEQ`, `BLT` <br />
