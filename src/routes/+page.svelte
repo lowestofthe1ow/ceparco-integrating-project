@@ -55,13 +55,7 @@
     }
 
     const step = () => {
-        const addr = pipeline.step();
-        const index = (addr - 0x0080) / 4
-        const lineNum = program.data?.instructionLineNos[index]
-        editor.clearHighlight();
-
-        if (lineNum > 0) {
-            editor.highlightLine(lineNum);}
+        pipeline.step();
     }
 
     const fullExec = () => {

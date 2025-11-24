@@ -256,12 +256,12 @@ export class Pipeline {
         }
 
         if (this.cycle > 1 && isNaN(this.WB.IR) && isNaN(this.MEM_WB.IR) && isNaN(this.EX_MEM.IR) && isNaN(this.ID_EX.IR) && isNaN(this.IF_ID.IR)) {
-            return this.IF_ID.NPC;
+            return true;
         }
 
         this.cycle += 1;
 
-        return this.IF_ID.NPC;
+        return true;
     }
 }
 
