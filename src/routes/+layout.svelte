@@ -1,5 +1,5 @@
 <script>
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/favicon.png';
 
 	import 'normalize.css'
 
@@ -15,3 +15,11 @@
 </svelte:head>
 
 {@render children()}
+
+<footer style="padding: 20px; text-align: center">
+	<hr style="border: 1px dashed gray; margin-bottom: 40px;"/>
+	<p>RISC-V Case project for <strong>CEPARCO: Multiprocessing and Parallel Computing</strong></p>
+	<small>LLOVIT, Benn Erico ・ MARQUESES, Lorenz Bernard ・ SILVA, Paulo Grane Gabriel</small>
+	<br /><br />
+	<img src={favicon} style="width: 2em" />
+</footer>

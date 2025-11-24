@@ -130,8 +130,6 @@
             </hgroup>
 
             <PipelineRegisterViewer />
-
-
         </div>
     </div>
 </div>
