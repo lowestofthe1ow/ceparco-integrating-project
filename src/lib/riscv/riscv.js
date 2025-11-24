@@ -62,6 +62,7 @@ export const parse = (input) => {
         instructions: [], // Instruction binary data (e.g. 0x0000A283)
         lines: [], // Instruction text data (e.g. "LW x5, 0(x1)")
         emptyLineNos: [],
+        instructionLineNos: [],
     }
 
     // Split into lines
@@ -174,6 +175,7 @@ export const parse = (input) => {
             let args = line[1].toLowerCase().replace(/,/g, "").split(" ")
 
             programData.lines.push(line[0] + " " + line[1]);
+            programData.instructionLineNos.push(i);
 
             // nemurihiMEEEEEEE mezameru watashi wa iMAAAAAAAAAAAA
             // lw instruction

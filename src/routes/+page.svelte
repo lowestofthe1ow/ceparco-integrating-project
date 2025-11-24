@@ -37,12 +37,6 @@
             // Parse program
             program.data = parse(editor.getValue())
 
-            // Scroll to instruction viewer
-            const instructionViewer = document.getElementById('instructions');
-            if (instructionViewer) {
-                instructionViewer.scrollIntoView({ behavior: 'smooth' });
-            }
-
             // Load program into memory
             for (let i = 0; i < program.data.instructions.length; i++) {
                 memory.storeInteger(0x0080 + i*4, program.data.instructions[i], 4)
@@ -61,7 +55,13 @@
     }
 
     const step = () => {
-        pipeline.step();
+        const addr = pipeline.step();
+        const index = (addr - 0x0080) / 4
+        const lineNum = program.data?.instructionLineNos[index]
+        editor.clearHighlight();
+
+        if (lineNum > 0) {
+            editor.highlightLine(lineNum);}
     }
 
     const fullExec = () => {

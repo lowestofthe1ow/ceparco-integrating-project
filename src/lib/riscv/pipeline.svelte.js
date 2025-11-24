@@ -80,7 +80,7 @@ export class Pipeline {
     rowCount = 0;
 
     addToCycleMap(stage, instruction) {
-        const row = this.stageCycles.find(x => {
+        const row = this.stageCycles.findLast(x => {
             return x.stage === stage && x.instruction === instruction;
         })
 
@@ -90,7 +90,6 @@ export class Pipeline {
 
             console.log(row)
         }
-
     }
 
     constructor() {
@@ -148,7 +147,7 @@ export class Pipeline {
 
 
         if (this.cutOffBranch) {
-            // this.IF_ID.IR = NaN
+            this.IF_ID.IR = NaN
             this.ID_EX.IR = NaN
             this.cutOffBranch = false;
         }
@@ -175,12 +174,14 @@ export class Pipeline {
         }
 
         // EX stage
-        this.EX_MEM.IR = this.ID_EX.IR;
-        this.addToCycleMap(2, this.EX_MEM.IR)
 
         if (!isBranch(this.ID_EX.IR)) {
+            this.EX_MEM.IR = this.ID_EX.IR;
+            this.addToCycleMap(2, this.EX_MEM.IR)
             // Execute the instruction in the EX/MEM stage
             EXInstruction(this.EX_MEM.IR)
+        } else {
+            this.EX_MEM.IR = NaN;
         }
 
         if (isNaN(this.EX_MEM.IR)) {
@@ -248,12 +249,12 @@ export class Pipeline {
         }
 
         if (this.cycle > 1 && isNaN(this.WB.IR) && isNaN(this.MEM_WB.IR) && isNaN(this.EX_MEM.IR) && isNaN(this.ID_EX.IR) && isNaN(this.IF_ID.IR)) {
-            return true;
+            return this.IF_ID.NPC;
         }
 
         this.cycle += 1;
 
-        return true;
+        return this.IF_ID.NPC;
     }
 }
 

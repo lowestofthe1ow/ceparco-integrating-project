@@ -51,9 +51,9 @@ export const beqExecute = (bin) => {
         console.log("Old PC: " + pipeline.IF_ID.PC)
         pipeline.IF_ID.PC = ((pipeline.ID_EX.IMM << 1) + pipeline.ID_EX.NPC) >>> 0
         console.log("New PC: " + pipeline.IF_ID.PC)
+        pipeline.cutOffBranch = true
     } else {
         pipeline.IF_ID.PC += 4
     }
 
-    pipeline.cutOffBranch = true
 }
