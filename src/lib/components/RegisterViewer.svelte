@@ -19,16 +19,17 @@
         <div class='viewer__label viewer__label--header' style="text-align: right">Data</div>
     </div>
 
-    {#each registersInt.entries() as [register, value]}
+    {#each registersInt.entries() as [register, value], index}
         <div class='viewer__row'>
             <!-- Provides direct edit access to all registers -->
             <!-- Register label -->
-            <div class='viewer__label'>{register}</div>
+            <div class='viewer__label'>{register}&nbsp;<span style="color: gray">(x{index})</span></div>
             <!-- Value field -->
             <div>
                 <input
                     class='viewer__input'
                     type='text'
+                    disabled={index == 0}
                     on:input={(e) => updateRegister(register, parseInt(e.target.value, 16))}
                     value={formatAsHex(value, 8)} />
             </div>

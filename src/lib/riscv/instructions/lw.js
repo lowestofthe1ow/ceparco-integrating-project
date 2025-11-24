@@ -75,7 +75,12 @@ export const lwWB = (bin) => {
     console.log("LMD = " + pipeline.MEM_WB.LMD)
 
     pipeline.WB.REGISTER = pipeline.MEM_WB.LMD
-    setRegValue(rd, pipeline.MEM_WB.LMD)
+
+    // Writes to x0 are ignored
+    if (rd != 0) {
+        setRegValue(rd, pipeline.MEM_WB.LMD)
+    }
+
 }
 
 /**

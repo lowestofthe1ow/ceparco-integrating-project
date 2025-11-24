@@ -17,7 +17,11 @@ const checkDependencies = (stalledStage, stallers) => {
     let foundStallingDependency = false
 
     for (const staller of stallers) {
+        const staller_rd = getRD(staller.IR)
 
+        if (staller_rd == 0) {
+            continue;
+        }
 
         if (staller) {
             const staller_b6_0 = staller.IR & 0b1111111
@@ -45,7 +49,7 @@ const checkDependencies = (stalledStage, stallers) => {
                 }
             } else {
                 let dependencies = getDependencies(stalledStage.IR);
-                if (dependencies.includes(getRD(staller.IR))) {
+                if (dependencies.includes(staller_rd)) {
                     console.log("Dependency found. Stalling execution...")
                     foundStallingDependency = true
                     break
