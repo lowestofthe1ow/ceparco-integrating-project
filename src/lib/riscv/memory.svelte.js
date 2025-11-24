@@ -1,5 +1,5 @@
 export class Memory {
-    memory = $state(new Array(65536).fill(0));
+    memory = $state(new Array(256).fill(0));
 
     clear() {
         this.memory.fill(0);

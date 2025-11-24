@@ -20,7 +20,7 @@
         <!-- TODO: Check for out-of-range errors -->
         <input class='viewer__input viewer__input--goto' type='text'
             on:input={(e) => {startingAddress = parseInt(e.target.value, 16)}}
-            value={formatAsHex(startingAddress, 4)}/>
+            value={formatAsHex(startingAddress, 8)}/>
         <!-- Moves the addresses window down by 1 address -->
         <!-- TODO: Check for out-of-range errors -->
         <button class='viewer__button' on:click={() => {startingAddress++;}}>&rarr;</button>
@@ -35,7 +35,7 @@
         <div class='viewer__row'>
             <!-- Provides direct edit access to all memory addresses -->
             <!-- Address label -->
-            <div class='viewer__label'>{formatAsHex(startingAddress + index, 4)}</div>
+            <div class='viewer__label'>{formatAsHex(startingAddress + index, 8)}</div>
             <!-- Value field -->
             <div>
                 <input
