@@ -71,7 +71,7 @@ To check error handling, programs containing errors such as invalid syntax, unkn
 
 The outputs of the program reflected in the GUI were compared with expected results from RARS (RISC-V Assembler and Runtime Simulator) version 1.6 and with manual solutions by the group members. Hex instruction codes per instruction were crosschecked with the instruction codes from RARS 1.6. Pipeline map and pipeline register values were each crosschecked with expected values from manual solutions.
 
-Editability of register and memory values were tested by inputting of values using the GUI. Values typed in the data segment from 0000-007F and values typed in the registers values must be accepted by the program. The affected values in the pipeline registers when running the program were crosschecked with expected values from manual solutions.
+Editability of register and memory values were tested by inputting of values using the GUI. Valid values must be accepted by the program. The affected values in the pipeline registers when running the program were crosschecked with expected values from manual solutions.
 
 ## Execution screenshot
 
