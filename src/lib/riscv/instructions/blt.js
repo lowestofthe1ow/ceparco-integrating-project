@@ -50,12 +50,17 @@ export const bltExecute = (bin) => {
 
     // TODO: Clear the rest of the pipeline after the branch executes
     const entries = [...registersInt]
-    if (getRegValue(rs1) == getRegValue(rs2)){
-        pipeline.IF_ID.PC = ((pipeline.ID_EX.IMM << 1) + pipeline.IF_ID.NPC) >>> 0
+    if (getRegValue(rs1) < getRegValue(rs2)){
+        console.log("Old PC: " + pipeline.IF_ID.PC)
+        pipeline.IF_ID.PC = ((pipeline.ID_EX.IMM << 1) + pipeline.ID_EX.NPC) >>> 0
+        console.log("New PC: " + pipeline.IF_ID.PC)
+        pipeline.cutOffBranch = true
     } else {
         pipeline.IF_ID.PC += 4
     }
+
 }
+
 
 
 
