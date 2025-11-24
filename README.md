@@ -63,6 +63,16 @@ SvelteKit manages to streamline how we present the frontend for the application 
 
 We also found considerable difficulty with constructing the pipeline map. To account for **loops**, we simplify the process by dynamically updating the map every cycle. **A row is added for every instruction fetched, instead of having a fixed number of rows based on the length of the program**. This allows us to easily update each row per stage.
 
+## Testing methodology
+
+Sample RISC-V programs using the supported instructions and directives were run in the webpage. Both manual typing into the IDE and uploading an existing ASM file with the **"Choose file"** option were tested.
+
+To check error handling, programs containing errors such as invalid syntax, unknown instructions, unknown declarations, and wrong parameters were run with the webpage IDE. The program should be unable to execute with errors. The line number and description of expected errors were crosschecked with the expected errors.
+
+The outputs of the program reflected in the GUI were compared with expected results from RARS (RISC-V Assembler and Runtime Simulator) version 1.6 and with manual solutions by the group members. Hex instruction codes per instruction were crosschecked with the instruction codes from RARS 1.6. Pipeline map and pipeline register values were each crosschecked with expected values from manual solutions.
+
+Editability of register and memory values were tested by inputting of values using the GUI. Values typed in the data segment from 0000-007F and values typed in the registers values must be accepted by the program. The affected values in the pipeline registers when running the program were crosschecked with expected values from manual solutions.
+
 ## Execution screenshot
 
 ![Program execution](img/page_screenshot.png)
