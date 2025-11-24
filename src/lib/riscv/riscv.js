@@ -176,7 +176,10 @@ export const parse = (input) => {
 
             programData.lines.push(line[0] + " " + line[1]);
             programData.instructionLineNos.push(i);
-
+            
+            if((programData.instructions.length + 1) * 4 + 0x80 > 0xFF){
+                break
+            }
             // nemurihiMEEEEEEE mezameru watashi wa iMAAAAAAAAAAAA
             // lw instruction
             if(line[0].toLowerCase() === "lw") {
